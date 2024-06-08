@@ -6,6 +6,7 @@ import (
    "log"
    "os"
    "github.com/gofiber/fiber/v2"
+   "github.com/gofiber/contrib/websocket"
    "github.com/gofiber/fiber/v2/middleware/cors"
    _"github.com/lib/pq" // add this
    "github.com/gofiber/template/html/v2"
@@ -30,6 +31,8 @@ func indexHandler(c *fiber.Ctx, db *sql.DB) error {
    })
 }
 
+
+// Structs for the application
 type todo struct {
    Item string
 }
@@ -98,6 +101,48 @@ func main() {
 	}))
 
 
+	app.Use("/ws", func(c *fiber.Ctx) error {
+	    if websocket.IsWebSocketUpgrade(c) {
+		c.Locals("allowed", true)
+		return c.Next()
+	    }
+	    return fiber.ErrUpgradeRequired
+	})
+
+	app.Get("/ws/:id", websocket.New(func(c *websocket.Conn) {
+	    // Handle WebSocket connection here
+
+	    var (
+		    messageType int
+		    msg		[]byte
+		    err		error
+	    )
+
+	    // these access local variables
+	    log.Println(c.Locals("allowed"))
+            log.Println(c.Params("id"))
+            log.Println(c.Query("v"))
+	    log.Println(c.Cookies("session"))
+
+	    for {
+
+		    if messageType, msg, err = c.ReadMessage(); err != nil {
+			    log.Println("read error :", err)
+			    break
+		    }
+
+		    response := string(msg)
+		    log.Printf("Chatroom: %s", c.Params("id"))
+		    log.Printf("Message: %s", msg)
+
+
+
+		    if err = c.WriteMessage(messageType, []byte(fmt.Sprintf("Server: %s", response))); err != nil {
+			    log.Println("Write error: ", err)
+			    break
+		    }
+	    }
+	}))
 
    app.Get("/", func(c *fiber.Ctx) error {
        return indexHandler(c, db)

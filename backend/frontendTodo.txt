@@ -1,0 +1,3 @@
+Using Vue Js for frontend 
+- keep the frontend simple 
+- add easy interractions, reactions, and being able to build out produictivty/team work section

@@ -1,0 +1,33 @@
+This is the todo list for the server written in golang
+
+
+Todo application
+	The database and routes are setup for the most part may just need some editing
+	Also may need to build out a BLL and add some middlewares when handling and validating a request
+	Create a DAL layer to handle database querying
+	optimize database query 
+	When I get to this point may just need to test and debug the application
+
+
+
+chat application
+	have the websocket server setup and able to connect to local host
+	need to add more functionality
+		creating chatrooms
+		adding users to chatrooms
+		removing users from chatrooms
+		broadcasting messages to the chatroom
+	When I get to this point
+		add ability to save chats and restore chatrooms
+		CRUD for images and videos
+	
+
+This point
+- make sure the app runs well with what we have
+- figure out how to add shareable productivity ability
+	- work on tasks
+	- share canva boards
+	- share notes
+	- build out projects and build library of notes with snapshots, notes, vids, and etc
+
+
