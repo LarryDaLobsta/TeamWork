@@ -5,4 +5,5 @@ This is the team work application each directory has a detailed to do that shoul
 this is just a weekend project type of deal so it will take some time to build out.
 
 Main next project/goal
-- build out the chat application front end and backend
+- connect front end socket with the backend
+- work on developing chat rooms 
