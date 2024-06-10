@@ -11,6 +11,9 @@ import (
    _"github.com/lib/pq" // add this
    "github.com/gofiber/template/html/v2"
    "net/url"
+   "bytes"
+   "encoding/json"
+   "html/template"
 )
 
 func indexHandler(c *fiber.Ctx, db *sql.DB) error {
@@ -82,6 +85,88 @@ func deleteHandler(c *fiber.Ctx, db *sql.DB) error {
    return c.SendString("deleted")
 }
 
+// end of sql stuff
+
+// start of websocket stuff
+type Message struct {
+	Text       string `json:"text"`
+}
+// websocket structs 
+type WebSocketServer struct {
+	clients map[*websocket.Conn]bool
+	broadcast chan *Message
+}
+
+func NewWebSocket() *WebSocketServer {
+	return &WebSocketServer{
+		clients: make(map[*websocket.Conn]bool),
+		broadcast: make(chan *Message),
+	}
+}
+
+func (s *WebSocketServer) HandleWebSocket(ctx *websocket.Conn){
+
+	// REgister a new Client
+	s.clients[ctx] = true
+	defer func() {
+		delete(s.clients, ctx)
+		ctx.Close()
+	}()
+
+
+	for {
+		_, msg, err := ctx.ReadMessage()
+		if err != nil {
+			log.Println("Read Error", err)
+			break
+		}
+
+
+		// send the message to the broadcast channel
+		var message Message
+		if err := json.Unmarshal(msg, &message); err != nil{
+			log.Fatalf("Error Umarshalling")
+		}
+		s.broadcast <- &message
+	}
+}
+
+func (s *WebSocketServer) HandleMessages(){
+	for { 
+		msg := <- s.broadcast
+
+
+		// Send the message to all Clients
+
+
+		for client := range s.clients {
+			err := client.WriteMessage(websocket.TextMessage, getMessageTemplate(msg))
+			if err != nil {
+				log.Printf("Write Error: %v", err)
+				client.Close()
+				delete(s.clients, client)
+			}
+		}
+	}
+}
+
+
+func getMessageTemplate( msg *Message) []byte {
+	tmpl, err := template.ParseFiles("views/message.html")
+	if err != nil {
+		log.Fatal("template parsing: %s" ,err)
+	}
+
+	// Render the template with the message as data
+	var renderedMessage bytes.Buffer
+	err = tmpl.Execute(&renderedMessage, msg)
+	if err != nil {
+		log.Fatalf("template execution: %s", err)
+	}
+
+	return renderedMessage.Bytes()
+}
+
 func main() {
    connStr := "postgresql://postgres:gopher@localhost/todos?sslmode=disable"
    // Connect to database
@@ -94,13 +179,16 @@ func main() {
        Views: engine,
    })
 
+   // static route and directory
+  app.Static("/static/", "./static") 
+
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*", // Allow all origins, or specify your frontend domain
 		AllowMethods: "GET,POST,PUT,DELETE",
 	}))
 
-
+	
 	app.Use("/ws", func(c *fiber.Ctx) error {
 	    if websocket.IsWebSocketUpgrade(c) {
 		c.Locals("allowed", true)
@@ -109,43 +197,27 @@ func main() {
 	    return fiber.ErrUpgradeRequired
 	})
 
-	app.Get("/ws/:id", websocket.New(func(c *websocket.Conn) {
+
+
+	// create new websocket
+	server := NewWebSocket()
+
+
+	app.Get("/ws", websocket.New(func(c *websocket.Conn) {
 	    // Handle WebSocket connection here
 
-	    var (
-		    messageType int
-		    msg		[]byte
-		    err		error
-	    )
-
-	    // these access local variables
-	    log.Println(c.Locals("allowed"))
-            log.Println(c.Params("id"))
-            log.Println(c.Query("v"))
-	    log.Println(c.Cookies("session"))
-
-	    for {
-
-		    if messageType, msg, err = c.ReadMessage(); err != nil {
-			    log.Println("read error :", err)
-			    break
-		    }
-
-		    response := string(msg)
-		    log.Printf("Chatroom: %s", c.Params("id"))
-		    log.Printf("Message: %s", msg)
-
-
-
-		    if err = c.WriteMessage(messageType, []byte(fmt.Sprintf("Server: %s", response))); err != nil {
-			    log.Println("Write error: ", err)
-			    break
-		    }
-	    }
+	    server.HandleWebSocket(c)
 	}))
+
+	go server.HandleMessages()
+
 
    app.Get("/", func(c *fiber.Ctx) error {
        return indexHandler(c, db)
+   })
+
+   app.Get("/chatroom", func(c *fiber.Ctx) error {
+	   return c.Render("chatroom", fiber.Map{})
    })
 
    app.Post("/", func(c *fiber.Ctx) error {
