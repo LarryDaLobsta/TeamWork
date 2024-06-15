@@ -12,4 +12,13 @@ The reason being I don't want to have a bunch of stuff going into the database l
 
 
 
+As of Jun 14th
+- Found a couple articles to help with the development of using migrations, I will use gorm for some time if gorm works
+I will keep it, else I may go with ent.
+
+Follow tutorial to help build out User, then chatroom, then messages
+Then build out front end with htmx to build login page, chatroom creation/join page, 
+
+
+
 
