@@ -11,7 +11,7 @@ import (
 
 
 type User struct{
-	//gorm.Model
+	gorm.Model
 	username string
 	password string
 	UserId int
