@@ -14,6 +14,8 @@ import (
    "bytes"
    "encoding/json"
    "html/template"
+   "hello/ent"
+   "context"
 )
 
 func indexHandler(c *fiber.Ctx, db *sql.DB) error {
@@ -170,10 +172,21 @@ func getMessageTemplate( msg *Message) []byte {
 func main() {
    connStr := "postgresql://postgres:gopher@localhost/todos?sslmode=disable"
    // Connect to database
+   client, err := ent.Open("postgres","host=192.168.0.53 port=5432 user=postgres dbname=todos password=postgres sslmode=disable")
+
+
    db, err := sql.Open("postgres", connStr)
    if err != nil {
-       log.Fatal(err)
+	   log.Fatalf("failed opening connection to postgres: %v", err)
    }
+
+   defer client.Close()
+
+   //running automigration
+   if err := client.Schema.Create(context.Background()); err != nil {
+	   log.Fatalf("failed creating schema resources: %v", err)
+   }
+
    engine := html.New("./views", ".html")
    app := fiber.New(fiber.Config{
        Views: engine,
