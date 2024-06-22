@@ -5,8 +5,8 @@ package ent
 import (
 	"context"
 	"fmt"
-	"hello/ent/message"
-	"hello/ent/predicate"
+	"teamplayer/ent/message"
+	"teamplayer/ent/predicate"
 	"math"
 
 	"entgo.io/ent/dialect/sql"

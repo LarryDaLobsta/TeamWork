@@ -9,10 +9,10 @@ import (
 	"log"
 	"reflect"
 
-	"hello/ent/migrate"
+	"teamplayer/ent/migrate"
 
-	"hello/ent/message"
-	"hello/ent/user"
+	"teamplayer/ent/message"
+	"teamplayer/ent/user"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"

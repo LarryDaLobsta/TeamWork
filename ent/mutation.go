@@ -6,9 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"hello/ent/message"
-	"hello/ent/predicate"
-	"hello/ent/user"
+	"teamplayer/ent/message"
+	"teamplayer/ent/predicate"
+	"teamplayer/ent/user"
 	"sync"
 	"time"
 

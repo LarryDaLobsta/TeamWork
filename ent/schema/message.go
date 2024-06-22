@@ -20,6 +20,7 @@ func (Message) Fields() []ent.Field {
                 field.String("sender"),
                 // need to not be empty
                 field.String("receiver"),
+
                 // need to not be empty/also known as create date
                 field.Time("send_date").Default(time.Now),
                 // need to not be empty

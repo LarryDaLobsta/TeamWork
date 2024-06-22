@@ -6,8 +6,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"hello/ent/predicate"
-	"hello/ent/user"
+	"teamplayer/ent/predicate"
+	"teamplayer/ent/user"
 	"time"
 
 	"entgo.io/ent/dialect/sql"

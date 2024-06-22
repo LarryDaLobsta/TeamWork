@@ -4,7 +4,7 @@ package ent
 
 import (
 	"fmt"
-	"hello/ent/user"
+	"teamplayer/ent/user"
 	"strings"
 	"time"
 

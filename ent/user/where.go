@@ -3,7 +3,7 @@
 package user
 
 import (
-	"hello/ent/predicate"
+	"teamplayer/ent/predicate"
 	"time"
 
 	"entgo.io/ent/dialect/sql"

@@ -14,7 +14,8 @@ import (
    "bytes"
    "encoding/json"
    "html/template"
-   "hello/ent"
+   "teamplayer/ent"
+   DAL "teamplayer/dal"
    "context"
 )
 
@@ -182,15 +183,26 @@ func main() {
 
    defer client.Close()
 
+   ctx := context.Background()
+
    //running automigration
-   if err := client.Schema.Create(context.Background()); err != nil {
+   if err := client.Schema.Create(ctx); err != nil {
 	   log.Fatalf("failed creating schema resources: %v", err)
+   }
+	
+
+   if _, err = DAL.CreateUser(ctx, client); err != nil {
+	   log.Fatal(err)
    }
 
    engine := html.New("./views", ".html")
    app := fiber.New(fiber.Config{
        Views: engine,
    })
+
+   // create a new user to make sure this thing works
+
+
 
    // static route and directory
   app.Static("/static/", "./static") 
@@ -226,6 +238,7 @@ func main() {
 
 
    app.Get("/", func(c *fiber.Ctx) error {
+       log.Println("Grabbing web page")
        return indexHandler(c, db)
    })
 

@@ -3,9 +3,9 @@
 package ent
 
 import (
-	"hello/ent/message"
-	"hello/ent/schema"
-	"hello/ent/user"
+	"teamplayer/ent/message"
+	"teamplayer/ent/schema"
+	"teamplayer/ent/user"
 	"time"
 
 	"github.com/google/uuid"

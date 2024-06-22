@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"hello/ent/user"
+	"teamplayer/ent/user"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
