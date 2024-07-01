@@ -10,6 +10,8 @@ import (
 
 
 // Creating a user
+// Developer note need to check the new addition of a user
+// 	Check to see if a user has the same user name and password
 func CreateUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 	log.Println("Creating a user")
 	newUser, err := client.User.

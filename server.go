@@ -50,6 +50,7 @@ func postHandler(c *fiber.Ctx, db *sql.DB) error {
        return c.SendString(err.Error())
    }
    fmt.Printf("%v", newTodo)
+   fmt.Printf("New item is added to the todos")
    if newTodo.Item != "" {
        _, err := db.Exec("INSERT into todos VALUES ($1)", newTodo.Item)
        if err != nil {
@@ -59,6 +60,26 @@ func postHandler(c *fiber.Ctx, db *sql.DB) error {
 
    return c.Redirect("/")
 }
+
+
+// new user handler
+func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error{
+
+	// need to pipe everything from the c fiber.ctx variable into a user struct
+	// that can be validated here by query or in the CreateUser function to be dealt with
+
+
+
+
+	var err error;
+	if _, err = DAL.CreateUser(ctx, client); err != nil {
+		return err
+	}
+
+	return err
+
+}
+
 
 func putHandler(c *fiber.Ctx, db *sql.DB) error {
 
@@ -191,11 +212,7 @@ func main() {
    }
 	
 
-   if _, err = DAL.CreateUser(ctx, client); err != nil {
-	   log.Fatal(err)
-   }
-
-   engine := html.New("./views", ".html")
+      engine := html.New("./views", ".html")
    app := fiber.New(fiber.Config{
        Views: engine,
    })
@@ -246,8 +263,19 @@ func main() {
 	   return c.Render("chatroom", fiber.Map{})
    })
 
+   app.Get("/signup", func(c *fiber.Ctx) error {
+	   return c.Render("createuser", fiber.Map{})
+   })
+
+
+
+   // This will deal with the post methods adding new todos, new users, new chatrooms, etc
    app.Post("/", func(c *fiber.Ctx) error {
        return postHandler(c, db)
+   })
+
+   app.Post("/signup/newuser", func(c *fiber.Ctx) error {
+	   return newUserHandler(c, client, ctx)
    })
 
    //this is for a single parameter at the moment
