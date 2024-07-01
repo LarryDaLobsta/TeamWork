@@ -17,3 +17,9 @@ June 21st update
 -   Created edges for users and messages
 -   Create todos for users and messages
 -   Create edges for todos
+
+June 30th update
+- Partially dealing with the ability to create a user
+- Need to add Validation sequence in the handler method for creating a user
+- clean up UI with HTMX for the front end create user form
+- Deal with validation if a user is not unique and process that error from server to UI
