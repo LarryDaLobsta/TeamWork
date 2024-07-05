@@ -1,3 +1,5 @@
+package models
+
 //This will hold the user model, these will some of the main to go into the database 
 // user: CRUD ability for to do items, messaging ability, CRUD for chat rooms
 

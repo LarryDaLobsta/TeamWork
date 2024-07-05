@@ -6,6 +6,8 @@ import (
     "log"
     "teamplayer/ent"
     _ "github.com/lib/pq"
+    "github.com/gofiber/fiber/v2"
+    M "teamplayer/models"
 )
 
 
@@ -24,6 +26,7 @@ func CreateUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 	
 	// check to make sure the save is successful
 	if err != nil {
+		log.Println("Failed to create a new user")
 		return nil, fmt.Errorf("Failed to creating a new user: %w", err)
 	}
 	log.Println("User created successfully: ", newUser)
@@ -31,7 +34,24 @@ func CreateUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 }
 
 
+func CheckUser(c *fiber.Ctx, client *ent.Client) (bool, error)  {
+	// Checks to see if a user already with a password or username provided by a new user
 
+	// create a new user struct
+	var newUser = new(M.User)
+
+	// grab and put in struct
+	// return false if not able to do it 
+	if err := c.BodyParser(newUser); err != nil {
+		return false, err
+	}
+
+
+
+
+
+	return true, nil
+}
 
 
 

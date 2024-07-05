@@ -15,6 +15,7 @@ import (
    "encoding/json"
    "html/template"
    "teamplayer/ent"
+   _ "teamplayer/models"
    DAL "teamplayer/dal"
    "context"
 )
@@ -68,7 +69,14 @@ func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error
 	// need to pipe everything from the c fiber.ctx variable into a user struct
 	// that can be validated here by query or in the CreateUser function to be dealt with
 
+	//access the fiber to get the information for user creation
+	// then check to see if the database contains a username or password given by the user
 
+	var checkError error;
+	var checkBool bool = false;
+
+	checkBool, checkError = DAL.CheckUser(c, client)
+	fmt.Println(checkBool, checkError)
 
 
 	var err error;
@@ -217,7 +225,6 @@ func main() {
        Views: engine,
    })
 
-   // create a new user to make sure this thing works
 
 
 

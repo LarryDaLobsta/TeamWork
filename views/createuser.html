@@ -1,14 +1,18 @@
-File for creating a new user and passing it back via htmx and 
 
+
+<script src="https://unpkg.com/htmx.org@2.0.0/dist/htmx.js" integrity="sha384-Xh+GLLi0SMFPwtHQjT72aPG19QvKB8grnyRbYBNIdHWc2NkCrz65jlU7YrzO6qRp" crossorigin="anonymous"></script>
 
 
 <form>
 	<label> First Name : </label><br>
-	<input ><br>
+	<input type="text" name="firstname" id="firstname" ><br>
 	<label> Last Name : </label><br>
-	<input ><br>
+	<input type="text" name="lastname" id="lastname" ><br>
 	<label> UserName : </label><br>
-	<input ><br>
+	<input type="text" name="username" id="username" ><br>
 	<label> Password : </label><br>
-	<input ><br>
+	<input type="text" name="password" id="password" ><br>
+	<button type="submit" value="Submit" hx-post="/signup/newuser" hx-include="#firstname #lastname #username #password">Submit</button>
+
+	
 </form>

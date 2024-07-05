@@ -4,9 +4,9 @@ go 1.22.3
 
 require (
 	entgo.io/ent v0.13.1
-	github.com/gofiber/contrib/websocket v1.3.1
-	github.com/gofiber/fiber/v2 v2.52.4
-	github.com/gofiber/template/html/v2 v2.1.1
+	github.com/gofiber/contrib/websocket v1.3.2
+	github.com/gofiber/fiber/v2 v2.52.5
+	github.com/gofiber/template/html/v2 v2.1.2
 	github.com/google/uuid v1.6.0
 	github.com/lib/pq v1.10.9
 )
