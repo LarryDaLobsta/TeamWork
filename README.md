@@ -23,3 +23,9 @@ June 30th update
 - Need to add Validation sequence in the handler method for creating a user
 - clean up UI with HTMX for the front end create user form
 - Deal with validation if a user is not unique and process that error from server to UI
+
+July 6th
+- Cleaned up the DAL capability for creating a user and validating whether a username and password already exists
+- Need to connect the user finder and usercreation function
+- Add animation for dealing with authentication errors
+- Need to give ability to user to create chatrooms after registering
