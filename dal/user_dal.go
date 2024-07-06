@@ -5,6 +5,7 @@ import (
     "context"
     "log"
     "teamplayer/ent"
+    "teamplayer/ent/user"
     _ "github.com/lib/pq"
     "github.com/gofiber/fiber/v2"
     M "teamplayer/models"
@@ -34,7 +35,8 @@ func CreateUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 }
 
 
-func CheckUser(c *fiber.Ctx, client *ent.Client) (bool, error)  {
+// returns true if user found or false if user not found
+func CheckUser(ctx context.Context, c *fiber.Ctx, client *ent.Client) (bool, error)  {
 	// Checks to see if a user already with a password or username provided by a new user
 
 	// create a new user struct
@@ -43,14 +45,33 @@ func CheckUser(c *fiber.Ctx, client *ent.Client) (bool, error)  {
 	// grab and put in struct
 	// return false if not able to do it 
 	if err := c.BodyParser(newUser); err != nil {
-		return false, err
+		return true, err
+	}
+
+
+	// check to see if the username and password is in the database 
+	foundUsername, err := client.User.
+		Query().
+		Where(user.UsernameEQ(newUser.UserName)).Only(ctx)
+
+	if foundUsername != nil {
+		log.Println("There is a user with that username")
+		return true, err
+	}
+
+	//look password
+	foundUserPassword, err := client.User.
+			Query().
+			Where(user.PasswordEQ(newUser.Password)).Only(ctx)
+
+	if foundUserPassword != nil {
+		log.Println("There is a user with that password ")
+		return true, err
 	}
 
 
 
-
-
-	return true, nil
+	return false, nil
 }
 
 

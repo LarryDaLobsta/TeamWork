@@ -72,19 +72,18 @@ func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error
 	//access the fiber to get the information for user creation
 	// then check to see if the database contains a username or password given by the user
 
-	var checkError error;
 	var checkBool bool = false;
+	var checkError error;
 
-	checkBool, checkError = DAL.CheckUser(c, client)
-	fmt.Println(checkBool, checkError)
-
-
-	var err error;
-	if _, err = DAL.CreateUser(ctx, client); err != nil {
-		return err
+	if checkBool, checkError = DAL.CheckUser(ctx, c, client); checkBool != false {
+		return nil
 	}
 
-	return err
+	if _, checkError = DAL.CreateUser(ctx, client); checkError != nil {
+		return checkError
+	}
+
+	return checkError
 
 }
 
