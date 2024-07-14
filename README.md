@@ -29,3 +29,9 @@ July 6th
 - Need to connect the user finder and usercreation function
 - Add animation for dealing with authentication errors
 - Need to give ability to user to create chatrooms after registering
+
+
+
+
+July 13th
+

@@ -87,6 +87,27 @@ func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error
 
 }
 
+// update user handler
+func updateUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
+
+
+	// check to see if the desired user exists
+	var checkBool bool = false;
+	var checkError error;
+
+	if checkBool, checkError = DAL.CheckUser(ctx, c, client); checkBool != false {
+		return nil
+	}
+
+
+	// if so then update
+	if _, checkError = DAL.UpdateUser(ctx, client); checkError != nil {
+		return checkError
+	}
+
+	// good status message
+	return checkError
+}
 
 func putHandler(c *fiber.Ctx, db *sql.DB) error {
 

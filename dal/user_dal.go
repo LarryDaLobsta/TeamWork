@@ -16,6 +16,7 @@ import (
 // Developer note need to check the new addition of a user
 // 	Check to see if a user has the same user name and password
 func CreateUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
+
 	log.Println("Creating a user")
 	newUser, err := client.User.
 	Create().
@@ -23,7 +24,7 @@ func CreateUser(ctx context.Context, client *ent.Client) (*ent.User, error) {
 	SetLastName("TestLast").
 	SetUsername("test_guy12").
 	SetPassword("12345asdfasjdkf4").
-	Save(ctx)
+	SaveX(ctx) // See if different type of save occurs do to panic 
 	
 	// check to make sure the save is successful
 	if err != nil {
@@ -49,7 +50,10 @@ func CheckUser(ctx context.Context, c *fiber.Ctx, client *ent.Client) (bool, err
 	}
 
 
+	
 	// check to see if the username and password is in the database 
+
+	// create a check to see if a user has that specific UUID
 	foundUsername, err := client.User.
 		Query().
 		Where(user.UsernameEQ(newUser.UserName)).Only(ctx)
@@ -69,19 +73,41 @@ func CheckUser(ctx context.Context, c *fiber.Ctx, client *ent.Client) (bool, err
 		return true, err
 	}
 
-
-
 	return false, nil
 }
 
 
 
-
-// Finding a single user
-
-
-
 // Updating a user
+func UpdateUser(ctx context.Context, c *fiber.Ctx, client *ent.Client) (bool, error){
+
+	// create the struct for the user
+	var newUser = new(M.User)
+
+	if err := c.BodyParser(newUser); err != nil {
+		return false, err
+	}
+
+	// update if no issues
+	err := client.User.
+	UpdateOneID(M.UserUUID).
+	SetFirstName(M.User.FirstName).
+	SetLastName(M.User.LastName).
+	SetUserName(M.User.Username).
+	SetPassword(M.User.Password).
+	SaveX(ctx)
+
+	// check the save status
+	if err != nil {
+		log.Println("Failed to update the user")
+		return false, fmt.Errorf("Failed to creating a new user: %w", err)
+	}
+
+	// may want to create a save status function for the crud functionality
+	log.Println("User updated successfully")
+	return true, err
+
+}
 
 
 
