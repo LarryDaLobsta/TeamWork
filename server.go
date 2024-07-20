@@ -73,11 +73,11 @@ func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error
 	var checkBool bool = false
 	var checkError error
 
-	if checkBool, checkError = DAL.CheckUser(ctx, c, client); checkBool != false {
-		return nil
+	if checkError = DAL.CheckUser(ctx, c, client); checkError != nil {
+		return checkError
 	}
 
-	if _, checkError = DAL.CreateUser(ctx, c, client); checkError != nil {
+	if checkError = DAL.CreateUser(ctx, c, client); checkError != nil {
 		return checkError
 	}
 
@@ -87,19 +87,20 @@ func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error
 // update user handler
 func updateUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
 	// check to see if the desired user exists
-	var checkBool bool = false
 	var checkError error
 
-	if checkBool, checkError = DAL.CheckUser(ctx, c, client); checkBool != false {
-		return nil
+	if checkError = DAL.CheckUser(ctx, c, client); checkError != nil {
+		return checkError
 	}
 
 	// if so then update
-	if _, checkError = DAL.UpdateUser(ctx, client); checkError != nil {
+	if checkError = DAL.UpdateUser(ctx, c, client); checkError != nil {
 		return checkError
 	}
 
 	// good status message
+	// may need to build out custom messages tbh
+	// or return nil
 	return checkError
 }
 

@@ -3,7 +3,6 @@ package dal
 import (
 	"context"
 	"fmt"
-	"log"
 	"teamplayer/ent"
 	"teamplayer/ent/user"
 	M "teamplayer/models"
@@ -33,13 +32,13 @@ func CreateUser(ctx context.Context, c *fiber.Ctx, client *ent.Client) error {
 		SaveX(ctx) // See if different type of save occurs do to panic
 		// check to make sure the save is successful
 	if err != nil {
-		return fmt.Errorf("Failed creating the new user: %w", err)
+		return fmt.Errorf("Failed creating the new user: %v", err)
 	}
 	return nil
 }
 
 // returns true if user found or false if user not found
-func CheckUser(ctx context.Context, c *fiber.Ctx, client *ent.Client) (bool, error) {
+func CheckUser(ctx context.Context, c *fiber.Ctx, client *ent.Client) error {
 	// Checks to see if a user already with a password or username provided by a new user
 
 	// create a new user struct
@@ -48,7 +47,7 @@ func CheckUser(ctx context.Context, c *fiber.Ctx, client *ent.Client) (bool, err
 	// grab and put in struct
 	// return false if not able to do it
 	if err := c.BodyParser(newUser); err != nil {
-		return true, err
+		return err
 	}
 
 	// check to see if the username and password is in the database
@@ -59,8 +58,7 @@ func CheckUser(ctx context.Context, c *fiber.Ctx, client *ent.Client) (bool, err
 		Where(user.UsernameEQ(newUser.UserName)).Only(ctx)
 
 	if foundUsername != nil {
-		log.Println("There is a user with that username")
-		return true, err
+		return err
 	}
 
 	// look password
@@ -69,11 +67,10 @@ func CheckUser(ctx context.Context, c *fiber.Ctx, client *ent.Client) (bool, err
 		Where(user.PasswordEQ(newUser.Password)).Only(ctx)
 
 	if foundUserPassword != nil {
-		log.Println("There is a user with that password ")
-		return true, err
+		return err
 	}
 
-	return false, nil
+	return nil
 }
 
 // Updating a user
