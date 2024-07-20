@@ -34,4 +34,22 @@ July 6th
 
 
 July 13th
+- want to think of things for the ui considering I can add and update users apprpopriately
+- UI: 
+    login: add or update
+    login dashboard:
+        - projects
+            - chat rooms
+        - role of the logged in the user 
+            - roles of all users in a project
+        - calendars for dates for the projects, timelines and overall todos for assigned users
+    - This will be a good start for now....
+- finish CRUD abilities
+- create a status function for handling messages to send back to the user when CRUD capabilities are being used.
 
+
+
+July 19th 
+- Cleaned up the create new user and update a user functionality
+- need to test that out, then build delete and create query function to load a user
+- last thing create dashobard for user when they log in
