@@ -73,7 +73,7 @@ func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error
 	var checkBool bool = false
 	var checkError error
 
-	if checkError = DAL.CheckUser(ctx, c, client); checkError != nil {
+	if checkError = DAL.CheckUser(ctx, c, client); checkError != false {
 		return checkError
 	}
 
@@ -253,10 +253,19 @@ func main() {
 	// create new websocket
 	server := NewWebSocket()
 
+	// new new websocket
+	// need to create a a New Server host
+	// need to create a new handler
+	// then run the hub to
+
 	app.Get("/ws", websocket.New(func(c *websocket.Conn) {
 		// Handle WebSocket connection here
 
 		server.HandleWebSocket(c)
+	}))
+
+	app.Get("ws/chatroom/:roomId", websocket.New(func(c *websocket.Conn) {
+		ChH.JoinRoom(ctx, c)
 	}))
 
 	go server.HandleMessages()
