@@ -53,3 +53,14 @@ July 19th
 - Cleaned up the create new user and update a user functionality
 - need to test that out, then build delete and create query function to load a user
 - last thing create dashobard for user when they log in
+
+
+
+July 21st 
+- committing to chat room development
+- Things to do 
+    - need to clean up how the hub will be implemented in the server.go file
+    - clean up the handling of a new web socket connection when someone is joining a room
+    - then break out the chatroom.go file so that there is some decoupling with the different models and associated methods
+    - add database implementation to save chatrooms, chatmessages, log chat messages, etc
+
