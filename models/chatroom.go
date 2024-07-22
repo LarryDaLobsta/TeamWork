@@ -121,8 +121,36 @@ func NewChatRoomHandler(h *ChatRoomServer) *ChatRoomHandler {
 func NewChatroomServer() *ChatRoomServer {
 	// create a new chatroom ent framework to be saved in the database to be saved to the ent database
 	return &ChatRoomServer{
-		Rooms:     make(map[string]*ChatRoom),
-		broadcast: make(chan *ChatMessage, 5),
+		Rooms:      make(map[string]*ChatRoom),
+		broadcast:  make(chan *ChatMessage, 5),
+		Register:   make(chan *Client),
+		Unregister: make(chan *Client),
+	}
+}
+
+func (ChS *ChatRoomServer) StartServer() {
+	for {
+		select {
+		case c1 := <-ChS.Register:
+
+			// check to make sure the room exists
+			if _, ok := ChS.Rooms[c1.RoomID]; ok {
+				room := ChS.Rooms[c1.RoomID]
+
+				// check to make sure the user is not already in the room
+				if _, ok := room.clients[c1.ID]; !ok {
+					// add the user if he is not in the room already
+					room.clients[c1.ID] = c1
+				}
+
+			}
+		}
+
+		// if we are registering
+
+		// if we are unregistering
+
+		// broadcast message to clients in a room
 	}
 }
 
@@ -190,6 +218,8 @@ func (ChH *ChatRoomHandler) JoinRoom(ctx *fiber.Ctx, c *websocket.Conn) {
 	go newUser.writeMessage()
 	newUser.ReadMessage(*ChH.ChatRoomServ)
 }
+
+func StartServer()
 
 // add users to a webserver/chatroom
 // need to clean this up to be able to add Handle incoming and outgoing websocket connections

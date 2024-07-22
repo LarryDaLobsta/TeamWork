@@ -12,7 +12,7 @@ import (
 	"os"
 	DAL "teamplayer/dal"
 	"teamplayer/ent"
-	_ "teamplayer/models"
+	CHAT "teamplayer/models"
 
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
@@ -21,6 +21,7 @@ import (
 	_ "github.com/lib/pq" // add this
 )
 
+// This is a test for a PLUGIN FOR GIT
 func indexHandler(c *fiber.Ctx, db *sql.DB) error {
 	var res string
 	var todos []string
@@ -70,10 +71,9 @@ func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error
 	// access the fiber to get the information for user creation
 	// then check to see if the database contains a username or password given by the user
 
-	var checkBool bool = false
 	var checkError error
 
-	if checkError = DAL.CheckUser(ctx, c, client); checkError != false {
+	if checkError = DAL.CheckUser(ctx, c, client); checkError != nil {
 		return checkError
 	}
 
@@ -254,6 +254,11 @@ func main() {
 	server := NewWebSocket()
 
 	// new new websocket
+
+	chatHub := CHAT.NewChatroomServer()
+	chatHubHandler := CHAT.NewChatRoomHandler(chatHub)
+
+	chatHub.StartServer()
 	// need to create a a New Server host
 	// need to create a new handler
 	// then run the hub to
@@ -265,7 +270,7 @@ func main() {
 	}))
 
 	app.Get("ws/chatroom/:roomId", websocket.New(func(c *websocket.Conn) {
-		ChH.JoinRoom(ctx, c)
+		// join a room
 	}))
 
 	go server.HandleMessages()
