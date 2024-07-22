@@ -64,3 +64,6 @@ July 21st
     - then break out the chatroom.go file so that there is some decoupling with the different models and associated methods
     - add database implementation to save chatrooms, chatmessages, log chat messages, etc
 
+July 21st night edition
+- clean up the rest of the StartServer file in the chatroom module
+- then clean up the implementation in the main server.go file
