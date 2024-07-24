@@ -1,12 +1,9 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"database/sql" // add this
-	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/url"
 	"os"
@@ -133,80 +130,6 @@ func deleteHandler(c *fiber.Ctx, db *sql.DB) error {
 // end of sql stuff
 
 // start of websocket stuff
-type Message struct {
-	Text string `json:"text"`
-}
-
-// websocket structs
-type WebSocketServer struct {
-	clients   map[*websocket.Conn]bool
-	broadcast chan *Message
-}
-
-func NewWebSocket() *WebSocketServer {
-	return &WebSocketServer{
-		clients:   make(map[*websocket.Conn]bool),
-		broadcast: make(chan *Message),
-	}
-}
-
-func (s *WebSocketServer) HandleWebSocket(ctx *websocket.Conn) {
-	// REgister a new Client
-	s.clients[ctx] = true
-	defer func() {
-		delete(s.clients, ctx)
-		ctx.Close()
-	}()
-
-	for {
-		_, msg, err := ctx.ReadMessage()
-		if err != nil {
-			log.Println("Read Error", err)
-			break
-		}
-
-		// send the message to the broadcast channel
-		var message Message
-		if err := json.Unmarshal(msg, &message); err != nil {
-			log.Fatalf("Error Umarshalling")
-		}
-		s.broadcast <- &message
-	}
-}
-
-func (s *WebSocketServer) HandleMessages() {
-	for {
-		msg := <-s.broadcast
-
-		// Send the message to all Clients
-
-		for client := range s.clients {
-			err := client.WriteMessage(websocket.TextMessage, getMessageTemplate(msg))
-			if err != nil {
-				log.Printf("Write Error: %v", err)
-				client.Close()
-				delete(s.clients, client)
-			}
-		}
-	}
-}
-
-func getMessageTemplate(msg *Message) []byte {
-	tmpl, err := template.ParseFiles("views/message.html")
-	if err != nil {
-		log.Fatal("template parsing: %s", err)
-	}
-
-	// Render the template with the message as data
-	var renderedMessage bytes.Buffer
-	err = tmpl.Execute(&renderedMessage, msg)
-	if err != nil {
-		log.Fatalf("template execution: %s", err)
-	}
-
-	return renderedMessage.Bytes()
-}
-
 func main() {
 	connStr := "postgresql://postgres:gopher@localhost/todos?sslmode=disable"
 	// Connect to database
@@ -229,7 +152,7 @@ func main() {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
-	engine := html.New("./views", ".html")
+	engine := html.New("~/goHello/ereere", ".html")
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
@@ -250,11 +173,6 @@ func main() {
 		return fiber.ErrUpgradeRequired
 	})
 
-	// create new websocket
-	server := NewWebSocket()
-
-	// new new websocket
-
 	chatHub := CHAT.NewChatroomServer()
 	chatHubHandler := CHAT.NewChatRoomHandler(chatHub)
 
@@ -263,17 +181,14 @@ func main() {
 	// need to create a new handler
 	// then run the hub to
 
-	app.Get("/ws", websocket.New(func(c *websocket.Conn) {
-		// Handle WebSocket connection here
-
-		server.HandleWebSocket(c)
-	}))
+	app.Post("/ws", func(c *fiber.Ctx) error {
+		chatHubHandler.CreateNewRoom(c)
+		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
+	})
 
 	app.Get("ws/chatroom/:roomId", websocket.New(func(c *websocket.Conn) {
 		// join a room
 	}))
-
-	go server.HandleMessages()
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		log.Println("Grabbing web page")

@@ -4,7 +4,6 @@ package models
 // update users in chatrooms, etc. All things chatrooms
 
 import (
-	"encoding/json"
 	_ "encoding/json"
 	_ "fmt"
 	"log"
@@ -144,13 +143,44 @@ func (ChS *ChatRoomServer) StartServer() {
 				}
 
 			}
+
+		// Removing a user
+		case c1 := <-ChS.Unregister:
+
+			// Make sure that room exists
+			if _, ok := ChS.Rooms[c1.RoomID]; ok {
+				room := ChS.Rooms[c1.RoomID]
+
+				if _, ok := room.clients[c1.ID]; ok {
+					// make sure rooms are not empty
+					if len(ChS.Rooms[c1.RoomID].clients) != 0 {
+						// notify room that a user is being removed
+						ChS.broadcast <- &ChatMessage{
+							Content:  "User left the chat",
+							RoomID:   c1.RoomID,
+							Username: c1.Username,
+						}
+					}
+
+					// delete the user
+					delete(ChS.Rooms[c1.RoomID].clients, c1.ID)
+
+					// close the channel from the deleted user
+					close(c1.Message)
+				}
+			}
+
+			// Broadcasting a message
+		case m := <-ChS.broadcast:
+			// check to make sure the room exists
+			if _, ok := ChS.Rooms[m.RoomID]; ok {
+				// broadcast message to all message channels
+				for _, c1 := range ChS.Rooms[m.RoomID].clients {
+					c1.Message <- m
+				}
+			}
+
 		}
-
-		// if we are registering
-
-		// if we are unregistering
-
-		// broadcast message to clients in a room
 	}
 }
 
@@ -217,51 +247,4 @@ func (ChH *ChatRoomHandler) JoinRoom(ctx *fiber.Ctx, c *websocket.Conn) {
 	// write the actual new user message to group after introduction
 	go newUser.writeMessage()
 	newUser.ReadMessage(*ChH.ChatRoomServ)
-}
-
-func StartServer()
-
-// add users to a webserver/chatroom
-// need to clean this up to be able to add Handle incoming and outgoing websocket connections
-func (ChH *ChatRoomHandler) HandleWebSocket(ctx *websocket.Conn) {
-	// we have a new websocket conn coming down the pipeline meaning a user wants to join a room
-
-	// REgister a new Client
-	s.clients[ctx] = true
-	defer func() {
-		delete(s.clients, ctx)
-		ctx.Close()
-	}()
-
-	for {
-		_, msg, err := ctx.ReadMessage()
-		if err != nil {
-			log.Println("Read Error", err)
-			break
-		}
-
-		// send the message to the broadcast channel
-		var message Message
-		if err := json.Unmarshal(msg, &message); err != nil {
-			log.Fatalf("Error Umarshalling")
-		}
-		s.broadcast <- &message
-	}
-}
-
-func (s *WebSocketServer) HandleMessages() {
-	for {
-		msg := <-s.broadcast
-
-		// Send the message to all Clients
-
-		for client := range s.clients {
-			err := client.WriteMessage(websocket.TextMessage, getMessageTemplate(msg))
-			if err != nil {
-				log.Printf("Write Error: %v", err)
-				client.Close()
-				delete(s.clients, client)
-			}
-		}
-	}
 }

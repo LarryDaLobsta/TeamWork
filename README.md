@@ -67,3 +67,10 @@ July 21st
 July 21st night edition
 - clean up the rest of the StartServer file in the chatroom module
 - then clean up the implementation in the main server.go file
+
+
+
+
+
+July 23rd 
+- need to fix views that will not run and go air issues
