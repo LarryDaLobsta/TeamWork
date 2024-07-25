@@ -152,7 +152,7 @@ func main() {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 
-	engine := html.New("../views", ".html")
+	engine := html.New("./views", ".html")
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
