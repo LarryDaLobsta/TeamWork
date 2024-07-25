@@ -9,9 +9,11 @@ import (
 	"os"
 	DAL "teamplayer/dal"
 	"teamplayer/ent"
+
 	CHAT "teamplayer/models"
 
 	"github.com/gofiber/contrib/websocket"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/template/html/v2"
@@ -165,31 +167,33 @@ func main() {
 		AllowMethods: "GET,POST,PUT,DELETE",
 	}))
 
-	app.Use("/ws", func(c *fiber.Ctx) error {
-		if websocket.IsWebSocketUpgrade(c) {
-			c.Locals("allowed", true)
-			return c.Next()
-		}
-		return fiber.ErrUpgradeRequired
-	})
+	// app.Use("/ws", func(c *fiber.Ctx) error {
+	// 	if websocket.IsWebSocketUpgrade(c) {
+	// 		c.Locals("allowed", true)
+	// 		return c.Next()
+	// 	}
+	//
+	// 	fmt.Println("Here is the main issue when connecting.")
+	// 	return fiber.ErrUpgradeRequired
+	// })
+	//
 
 	chatHub := CHAT.NewChatroomServer()
 	chatHubHandler := CHAT.NewChatRoomHandler(chatHub)
 
-	chatHub.StartServer()
+	// need own go routine to house the server for communication from the server for the web
+	go chatHub.StartServer()
 	// need to create a a New Server host
 	// need to create a new handler
 	// then run the hub to
-
-	app.Post("/ws", func(c *fiber.Ctx) error {
-		chatHubHandler.CreateNewRoom(c)
-		return c.Status(fiber.StatusInternalServerError).SendString("Internal Server Error")
-	})
+	//
+	// need to fix
+	app.Post("/ws/createRoom", chatHubHandler.CreateNewRoom(ctx*fiber.Ctx))
 
 	app.Get("ws/chatroom/:roomId", websocket.New(func(c *websocket.Conn) {
 		// join a room
 	}))
-
+	//
 	app.Get("/", func(c *fiber.Ctx) error {
 		log.Println("Grabbing web page")
 		return indexHandler(c, db)

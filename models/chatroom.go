@@ -5,6 +5,7 @@ package models
 
 import (
 	_ "encoding/json"
+	"fmt"
 	_ "fmt"
 	"log"
 	_ "log"
@@ -76,7 +77,7 @@ func (c *Client) ReadMessage(ChS ChatRoomServer) {
 				websocket.CloseGoingAway,
 				websocket.CloseAbnormalClosure,
 			) {
-				log.Printf(" error: v%", err)
+				log.Printf(" error: %v", err)
 			}
 			break
 		}
@@ -128,6 +129,7 @@ func NewChatroomServer() *ChatRoomServer {
 }
 
 func (ChS *ChatRoomServer) StartServer() {
+	fmt.Println("Here we go we are online with an issue")
 	for {
 		select {
 		case c1 := <-ChS.Register:
@@ -187,11 +189,13 @@ func (ChS *ChatRoomServer) StartServer() {
 // for creating a room
 func (ChH *ChatRoomHandler) CreateNewRoom(ctx *fiber.Ctx) {
 	// create a new room request
+	// Change to return the error and the .JSON response
 
 	var newRoomReq CreateRoomReq
 
 	// validate the request from the user
 	if err := ctx.BodyParser(newRoomReq); err != nil {
+
 		ctx.JSON(fiber.Map{
 			"ID":     newRoomReq.ID,
 			"Name":   newRoomReq.Name,

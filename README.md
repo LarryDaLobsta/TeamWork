@@ -74,3 +74,9 @@ July 21st night edition
 
 July 23rd 
 - need to fix views that will not run and go air issues
+
+
+July 24th 
+- need to figure out how to deal with returning JSON from  the createnewroom and in the future the Joinroom handler function.
+- I am thinking the best way to do deal with this is see how to access the context and its stuff
+- if not return the error/json as seen fit after the request has been validated
