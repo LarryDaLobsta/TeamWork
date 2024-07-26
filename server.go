@@ -167,17 +167,19 @@ func main() {
 		AllowMethods: "GET,POST,PUT,DELETE",
 	}))
 
-	// app.Use(func(c *fiber.Ctx) {
-	// 	if websocket.IsWebSocketUpgrade(c) {
-	// 		c.Locals("allowed", true)
-	// 		c.Next()
-	// 	}
-	// })
-	//
-	// 	fmt.Println("Here is the main issue when connecting.")
-	// 	return fiber.ErrUpgradeRequired
-	// })
-	//
+	app.Use("/ws", func(c *fiber.Ctx) error {
+		if websocket.IsWebSocketUpgrade(c) {
+			c.Locals("allowed", true)
+
+			// can also handle taking apart token can't do that in websocket conn vs ctx
+			log.Print("Upgraded web socket")
+
+			c.Next()
+		}
+
+		// do not need to upgrade unless going to use web socket functionality
+		return nil
+	})
 
 	chatHub := CHAT.NewChatroomServer()
 	chatHubHandler := CHAT.NewChatRoomHandler(chatHub)
@@ -192,8 +194,9 @@ func main() {
 		return chatHubHandler.CreateNewRoom(c)
 	})
 
-	app.Get("ws/chatroom/:roomId", websocket.New(func(c *websocket.Conn) {
+	app.Get("/ws/joinRoom/:roomId", websocket.New(func(c *websocket.Conn) {
 		log.Println("Made it into a chatroom")
+		chatHubHandler.JoinRoom(c)
 		// join a room
 	}))
 	//

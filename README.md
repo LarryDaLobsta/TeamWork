@@ -80,3 +80,9 @@ July 24th
 - need to figure out how to deal with returning JSON from  the createnewroom and in the future the Joinroom handler function.
 - I am thinking the best way to do deal with this is see how to access the context and its stuff
 - if not return the error/json as seen fit after the request has been validated
+
+
+July 26th 
+- Able to create and join chatrooms need to be able to broadcast message about a user joining the server. 
+- Maybe add functions to be able to grab all clients are get all rooms or get a certain room
+- Then need to work on the front end probably.

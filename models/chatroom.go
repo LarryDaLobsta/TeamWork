@@ -220,7 +220,7 @@ func (ChH *ChatRoomHandler) CreateNewRoom(c *fiber.Ctx) error {
 
 // User decides to join a room
 
-func (ChH *ChatRoomHandler) JoinRoom(ctx *fiber.Ctx, c *websocket.Conn) {
+func (ChH *ChatRoomHandler) JoinRoom(c *websocket.Conn) {
 	// authentication will happen in the .Use route in the server
 	// then after authentication we will move toward the next method in the stack
 	// which will get the websocket route and connection which will be passed in here
@@ -228,9 +228,9 @@ func (ChH *ChatRoomHandler) JoinRoom(ctx *fiber.Ctx, c *websocket.Conn) {
 	newUser := &Client{
 		Conn:     c,
 		Message:  make(chan *ChatMessage, 10),
-		ID:       ctx.Params("userId"),
-		RoomID:   ctx.Query("roomId"),
-		Username: ctx.Params("username"),
+		ID:       c.Params("userId"),
+		RoomID:   c.Query("roomId"),
+		Username: c.Params("username"),
 	}
 
 	// If succesfful create client, create messsages, register user to hub
@@ -238,8 +238,8 @@ func (ChH *ChatRoomHandler) JoinRoom(ctx *fiber.Ctx, c *websocket.Conn) {
 	// create the messages to notify new user joining
 	newUserMessage := &ChatMessage{
 		Content:  "A new user has joined the chat room",
-		RoomID:   ctx.Params("roomId"),
-		Username: ctx.Query("username"),
+		RoomID:   c.Params("roomId"),
+		Username: c.Query("username"),
 	}
 
 	// register the new user
