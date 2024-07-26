@@ -167,12 +167,14 @@ func main() {
 		AllowMethods: "GET,POST,PUT,DELETE",
 	}))
 
-	// app.Use("/ws", func(c *fiber.Ctx) error {
-	// 	if websocket.IsWebSocketUpgrade(c) {
-	// 		c.Locals("allowed", true)
-	// 		return c.Next()
-	// 	}
-	//
+	app.Use("/ws", func(c *fiber.Ctx) error {
+		if websocket.IsWebSocketUpgrade(c) {
+			c.Locals("allowed", true)
+			return c.Next()
+		}
+		return fiber.ErrUpgradeRequired
+	})
+
 	// 	fmt.Println("Here is the main issue when connecting.")
 	// 	return fiber.ErrUpgradeRequired
 	// })
@@ -187,8 +189,9 @@ func main() {
 	// need to create a new handler
 	// then run the hub to
 	//
-	// need to fix
-	app.Post("/ws/createRoom", chatHubHandler.CreateNewRoom(ctx*fiber.Ctx))
+	app.Post("/ws/createRoom", func(c *fiber.Ctx) error {
+		return chatHubHandler.CreateNewRoom(c)
+	})
 
 	app.Get("ws/chatroom/:roomId", websocket.New(func(c *websocket.Conn) {
 		// join a room

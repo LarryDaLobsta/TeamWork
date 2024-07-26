@@ -187,22 +187,20 @@ func (ChS *ChatRoomServer) StartServer() {
 }
 
 // for creating a room
-func (ChH *ChatRoomHandler) CreateNewRoom(ctx *fiber.Ctx) {
+func (ChH *ChatRoomHandler) CreateNewRoom(c *fiber.Ctx) error {
 	// create a new room request
 	// Change to return the error and the .JSON response
 
 	var newRoomReq CreateRoomReq
 
 	// validate the request from the user
-	if err := ctx.BodyParser(newRoomReq); err != nil {
-
-		ctx.JSON(fiber.Map{
+	if err := c.BodyParser(&newRoomReq); err != nil {
+		fmt.Println("Bad data")
+		return c.JSON(fiber.Map{
 			"ID":     newRoomReq.ID,
 			"Name":   newRoomReq.Name,
 			"status": http.StatusBadRequest,
 		})
-
-		return
 	}
 
 	// if a good request
@@ -213,7 +211,8 @@ func (ChH *ChatRoomHandler) CreateNewRoom(ctx *fiber.Ctx) {
 		clients: make(map[string]*Client),
 	}
 
-	ctx.JSON(fiber.Map{
+	fmt.Println("Bad data")
+	return c.JSON(fiber.Map{
 		"ID":     newRoomReq.ID,
 		"Name":   newRoomReq.Name,
 		"status": http.StatusOK,
