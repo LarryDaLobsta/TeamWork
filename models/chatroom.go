@@ -195,7 +195,6 @@ func (ChH *ChatRoomHandler) CreateNewRoom(c *fiber.Ctx) error {
 
 	// validate the request from the user
 	if err := c.BodyParser(&newRoomReq); err != nil {
-		fmt.Println("Bad data")
 		return c.JSON(fiber.Map{
 			"ID":     newRoomReq.ID,
 			"Name":   newRoomReq.Name,
@@ -211,7 +210,7 @@ func (ChH *ChatRoomHandler) CreateNewRoom(c *fiber.Ctx) error {
 		clients: make(map[string]*Client),
 	}
 
-	fmt.Println("Bad data")
+	c.Locals("allowed", true)
 	return c.JSON(fiber.Map{
 		"ID":     newRoomReq.ID,
 		"Name":   newRoomReq.Name,
