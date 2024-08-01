@@ -86,3 +86,12 @@ July 26th
 - Able to create and join chatrooms need to be able to broadcast message about a user joining the server. 
 - Maybe add functions to be able to grab all clients are get all rooms or get a certain room
 - Then need to work on the front end probably.
+
+
+July 31st 
+- Front End Todos
+--> Clean up Home Page to log a user in or have them create an account
+--> Create User webpage that will alllow them to have a dashboard for projects
+    --> Under porjects it should have rooms listed built around assignments 
+    --> Show current user role in response to project
+--> Chat room should be able to show status of the project and have panels for tracking project status

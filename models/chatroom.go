@@ -5,7 +5,6 @@ package models
 
 import (
 	_ "encoding/json"
-	"fmt"
 	_ "fmt"
 	"log"
 	_ "log"
@@ -129,7 +128,6 @@ func NewChatroomServer() *ChatRoomServer {
 }
 
 func (ChS *ChatRoomServer) StartServer() {
-	fmt.Println("Here we go we are online with an issue")
 	for {
 		select {
 		case c1 := <-ChS.Register:
