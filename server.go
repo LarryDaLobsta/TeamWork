@@ -32,9 +32,10 @@ func indexHandler(c *fiber.Ctx, db *sql.DB) error {
 	}
 	for rows.Next() {
 		rows.Scan(&res)
+
 		todos = append(todos, res)
 	}
-	return c.Render("index", fiber.Map{
+	return c.Render("index2", fiber.Map{
 		"Todos": todos,
 	})
 }
