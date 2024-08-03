@@ -36,6 +36,14 @@
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
+
+    <!--htmx-->
+    <script
+      src="https://unpkg.com/htmx.org@2.0.1"
+      integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/"
+      crossorigin="anonymous"
+    ></script>
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
       <a class="navbar-brand" href="#">TeamWork</a>
       <button
@@ -91,6 +99,10 @@
                   role="tab"
                   aria-controls="pills-login"
                   aria-selected="true"
+                  hx-on:click="htmx.addClass('#tab-login', 'active')
+                               htmx.removeClass('#tab-register', 'active')
+                               htmx.removeClass('#login', 'd-none')
+                               htmx.addClass('#createAcc', 'd-none')"
                   >Login</a
                 >
               </li>
@@ -103,12 +115,17 @@
                   role="tab"
                   aria-controls="pills-register"
                   aria-selected="false"
-                  >Register</a
+                  hx-on:click="htmx.removeClass('#tab-login', 'active')
+                               htmx.addClass('#tab-register', 'active')
+                               htmx.removeClass('#createAcc', 'd-none')
+                               htmx.addClass('#login', 'd-none')"
                 >
+                  Register
+                </a>
               </li>
             </ul>
           </div>
-          <div class="card" style="width: 25rem">
+          <div id="login" class="card login" style="width: 25rem">
             <div class="card-body">
               <h5 class="card-title">Login</h5>
               <form>
@@ -187,11 +204,27 @@
             </div>
           </div>
 
-          <div class="card" style="width: 25rem">
+          <div id="createAcc" class="d-none card" style="width: 25rem">
             <div class="card-body">
-              <h5 class="card-title">Login</h5>
+              <h5 class="card-title">Create an Account</h5>
               <form>
                 <div class="form-group">
+                  <label for="exampleInputEmail1">First name</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="exampleInputEmail1"
+                    aria-describedby="emailHelp"
+                    placeholder="First name"
+                  />
+                  <label for="exampleInputEmail1">Last name</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="exampleInputEmail1"
+                    aria-describedby="emailHelp"
+                    placeholder="Last name"
+                  />
                   <label for="exampleInputEmail1">Username</label>
                   <input
                     type="email"
@@ -201,7 +234,7 @@
                     placeholder="Username"
                   />
                   <small id="emailHelp" class="form-text text-muted"
-                    >Use the username you registered an account with.</small
+                    >Be creative but not stupid.</small
                   >
                 </div>
                 <div class="form-group">
@@ -214,6 +247,15 @@
                   />
                 </div>
 
+                <div class="form-group">
+                  <label for="exampleInputPassword1">Confirm Password</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="exampleInputPassword1"
+                    placeholder="Password"
+                  />
+                </div>
                 <p class="text-center">or</p>
                 <!--Use gmail, facebook, instagram, or apple id -->
                 <div>
@@ -268,5 +310,6 @@
         </div>
       </div>
     </div>
+    <button type="submit" class="btn btn-primary d-none">Hiddeg</button>
   </body>
 </html>

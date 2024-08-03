@@ -40,6 +40,11 @@ func indexHandler(c *fiber.Ctx, db *sql.DB) error {
 	})
 }
 
+// add the login handler here
+
+// need to validate, then authenticate
+// either go home screen to re-login or go to the dashboard
+
 // Structs for the application
 type todo struct {
 	Item string
@@ -61,6 +66,13 @@ func postHandler(c *fiber.Ctx, db *sql.DB) error {
 	}
 
 	return c.Redirect("/")
+}
+
+func loginUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
+	// this is to deal with returning users
+
+	// validate request,
+	return nil
 }
 
 // new user handler
