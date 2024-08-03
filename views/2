@@ -72,42 +72,17 @@
       </div>
     </nav>
 
+    <!--the row to house flipping from login to join-->
+
+    <div class="text-center container vertical-center mb-5">
+      <button type="button" class="btn btn-primary">Login</button>
+      <button type="button" class="btn btn-primary">Create an account</button>
+    </div>
+
     <!--two cards to have either a user join or login-->
-    <div class="container mx-auto">
+    <div class="container">
       <div class="row">
-        <div class="mx-auto">
-          <div>
-            <ul
-              class="nav nav-pills nav-justified mb-3"
-              id="ex1"
-              role="tablist"
-            >
-              <li class="nav-item" role="presentation">
-                <a
-                  class="nav-link active"
-                  id="tab-login"
-                  data-mdb-pill-init
-                  href="#pills-login"
-                  role="tab"
-                  aria-controls="pills-login"
-                  aria-selected="true"
-                  >Login</a
-                >
-              </li>
-              <li class="nav-item" role="presentation">
-                <a
-                  class="nav-link"
-                  id="tab-register"
-                  data-mdb-pill-init
-                  href="#pills-register"
-                  role="tab"
-                  aria-controls="pills-register"
-                  aria-selected="false"
-                  >Register</a
-                >
-              </li>
-            </ul>
-          </div>
+        <div class="col-sm-6 mx-auto">
           <div class="card" style="width: 25rem">
             <div class="card-body">
               <h5 class="card-title">Login</h5>
@@ -133,64 +108,30 @@
                     id="exampleInputPassword1"
                     placeholder="Password"
                   />
-                </div>
-
-                <p class="text-center">or</p>
-                <!--Use gmail, facebook, instagram, or apple id -->
-                <div>
-                  <button
-                    type="button"
-                    data-mdb-button-init
-                    data-mdb-ripple-init
-                    class="btn btn-link btn-floating mx-1"
-                  >
-                    <i class="fab fa-facebook-f">instagram</i>
-                  </button>
-                  <button
-                    type="button"
-                    data-mdb-button-init
-                    data-mdb-ripple-init
-                    class="btn btn-link btn-floating mx-1"
-                  >
-                    <i class="fab fa-facebook-f">facebook</i>
-                  </button>
-
-                  <button
-                    type="button"
-                    data-mdb-button-init
-                    data-mdb-ripple-init
-                    class="btn btn-link btn-floating mx-1"
-                  >
-                    <i class="fab fa-google">gmail</i>
-                  </button>
-
-                  <button
-                    type="button"
-                    data-mdb-button-init
-                    data-mdb-ripple-init
-                    class="btn btn-link btn-floating mx-1"
-                  >
-                    <i class="fab fa-twitter">twitter</i>
-                  </button>
-
-                  <button
-                    type="button"
-                    data-mdb-button-init
-                    data-mdb-ripple-init
-                    class="btn btn-link btn-floating mx-1"
-                  >
-                    <i class="fab fa-github">github</i>
-                  </button>
-                </div>
+                </div
                 <button type="submit" class="btn btn-primary">Login</button>
               </form>
             </div>
           </div>
-
+        </div>
+        <div class="col-sm-6 mx-auto">
           <div class="card" style="width: 25rem">
             <div class="card-body">
-              <h5 class="card-title">Login</h5>
+              <h5 class="card-title">Create account</h5>
               <form>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="exampleInputEmail1"
+                    aria-describedby="emailHelp"
+                    placeholder="Username"
+                  />
+                  <small id="emailHelp" class="form-text text-muted">
+                    We will not share your email with anyone.</small
+                  >
+                </div>
                 <div class="form-group">
                   <label for="exampleInputEmail1">Username</label>
                   <input
@@ -200,8 +141,8 @@
                     aria-describedby="emailHelp"
                     placeholder="Username"
                   />
-                  <small id="emailHelp" class="form-text text-muted"
-                    >Use the username you registered an account with.</small
+                  <small id="emailHelp" class="form-text text-muted">
+                    Be creative.</small
                   >
                 </div>
                 <div class="form-group">
@@ -212,54 +153,6 @@
                     id="exampleInputPassword1"
                     placeholder="Password"
                   />
-                </div>
-
-                <p class="text-center">or</p>
-                <!--Use gmail, facebook, instagram, or apple id -->
-                <div>
-                  <button
-                    type="button"
-                    data-mdb-button-init
-                    data-mdb-ripple-init
-                    class="btn btn-link btn-floating mx-1"
-                  >
-                    <i class="fab fa-facebook-f">instagram</i>
-                  </button>
-                  <button
-                    type="button"
-                    data-mdb-button-init
-                    data-mdb-ripple-init
-                    class="btn btn-link btn-floating mx-1"
-                  >
-                    <i class="fab fa-facebook-f">facebook</i>
-                  </button>
-
-                  <button
-                    type="button"
-                    data-mdb-button-init
-                    data-mdb-ripple-init
-                    class="btn btn-link btn-floating mx-1"
-                  >
-                    <i class="fab fa-google">gmail</i>
-                  </button>
-
-                  <button
-                    type="button"
-                    data-mdb-button-init
-                    data-mdb-ripple-init
-                    class="btn btn-link btn-floating mx-1"
-                  >
-                    <i class="fab fa-twitter">twitter</i>
-                  </button>
-
-                  <button
-                    type="button"
-                    data-mdb-button-init
-                    data-mdb-ripple-init
-                    class="btn btn-link btn-floating mx-1"
-                  >
-                    <i class="fab fa-github">github</i>
-                  </button>
                 </div>
                 <button type="submit" class="btn btn-primary">Login</button>
               </form>
