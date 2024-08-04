@@ -21,22 +21,24 @@ import (
 )
 
 // This is a test for a PLUGIN FOR GIT
-func indexHandler(c *fiber.Ctx, db *sql.DB) error {
-	var res string
-	var todos []string
-	rows, err := db.Query("SELECT * FROM todos")
-	defer rows.Close()
-	if err != nil {
-		log.Fatalln(err)
-		c.JSON("An error occured")
-	}
-	for rows.Next() {
-		rows.Scan(&res)
+// render the login page
+func indexHandler(c *fiber.Ctx) error {
+	// var res string
+	// var todos []string
+	// rows, err := db.Query("SELECT * FROM todos")
+	// defer rows.Close()
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// 	c.JSON("An error occured")
+	// }
+	// for rows.Next() {
+	// 	rows.Scan(&res)
+	//
+	// 	todos = append(todos, res)
+	// }
 
-		todos = append(todos, res)
-	}
 	return c.Render("index2", fiber.Map{
-		"Todos": todos,
+		//"Todos": todos,
 	})
 }
 
@@ -77,23 +79,18 @@ func loginUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) err
 
 // new user handler
 func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
-	// need to pipe everything from the c fiber.ctx variable into a user struct
-	// that can be validated here by query or in the CreateUser function to be dealt with
-
-	// access the fiber to get the information for user creation
-	// then check to see if the database contains a username or password given by the user
-
 	var checkError error
-
 	if checkError = DAL.CheckUser(ctx, c, client); checkError != nil {
 		return checkError
 	}
-
 	if checkError = DAL.CreateUser(ctx, c, client); checkError != nil {
-		return checkError
-	}
+		// return the message and take the user back to create an account
+		return c.SendString(checkError.Error())
 
-	return checkError
+		// return c.Redirect("/")
+	}
+	// take the user to the dashboard
+	return c.SendString("Usser created successfully")
 }
 
 // update user handler
@@ -197,12 +194,7 @@ func main() {
 	chatHub := CHAT.NewChatroomServer()
 	chatHubHandler := CHAT.NewChatRoomHandler(chatHub)
 
-	// need own go routine to house the server for communication from the server for the web
 	go chatHub.StartServer()
-	// need to create a a New Server host
-	// need to create a new handler
-	// then run the hub to
-	//
 	app.Post("/ws/createRoom", func(c *fiber.Ctx) error {
 		return chatHubHandler.CreateNewRoom(c)
 	})
@@ -212,27 +204,22 @@ func main() {
 		chatHubHandler.JoinRoom(c)
 		// join a room
 	}))
-	//
+
+	// this will return the default login page
 	app.Get("/", func(c *fiber.Ctx) error {
-		log.Println("Grabbing web page")
-		return indexHandler(c, db)
+		// render the login and join form
+		return indexHandler(c)
 	})
 
 	app.Get("/chatroom", func(c *fiber.Ctx) error {
 		return c.Render("chatroom", fiber.Map{})
 	})
 
-	app.Get("/signup", func(c *fiber.Ctx) error {
-		return c.Render("createuser", fiber.Map{})
-	})
-
 	// This will deal with the post methods adding new todos, new users, new chatrooms, etc
-	app.Post("/", func(c *fiber.Ctx) error {
-		return postHandler(c, db)
-	})
-
-	app.Post("/signup/newuser", func(c *fiber.Ctx) error {
-		return newUserHandler(c, client, ctx)
+	app.Post("/", func(cfib *fiber.Ctx) error {
+		// adding user to the system
+		return newUserHandler(cfib, client, ctx)
+		// return postHandler(c, db)
 	})
 
 	// this is for a single parameter at the moment

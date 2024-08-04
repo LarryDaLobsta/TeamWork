@@ -128,7 +128,7 @@
           <div id="login" class="card login" style="width: 25rem">
             <div class="card-body">
               <h5 class="card-title">Login</h5>
-              <form>
+              <form action="/" method="POST">
                 <div class="form-group">
                   <label for="exampleInputEmail1">Username</label>
                   <input
@@ -207,31 +207,28 @@
           <div id="createAcc" class="d-none card" style="width: 25rem">
             <div class="card-body">
               <h5 class="card-title">Create an Account</h5>
-              <form>
+              <form action="/" method="POST">
                 <div class="form-group">
                   <label for="exampleInputEmail1">First name</label>
                   <input
-                    type="email"
                     class="form-control"
                     id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
                     placeholder="First name"
+                    name="firstname"
                   />
                   <label for="exampleInputEmail1">Last name</label>
                   <input
-                    type="email"
                     class="form-control"
                     id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
                     placeholder="Last name"
+                    name="lastname"
                   />
                   <label for="exampleInputEmail1">Username</label>
                   <input
-                    type="email"
                     class="form-control"
                     id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
                     placeholder="Username"
+                    name="username"
                   />
                   <small id="emailHelp" class="form-text text-muted"
                     >Be creative but not stupid.</small
@@ -244,19 +241,9 @@
                     class="form-control"
                     id="exampleInputPassword1"
                     placeholder="Password"
+                    name="password"
                   />
                 </div>
-
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Confirm Password</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    id="exampleInputPassword1"
-                    placeholder="Password"
-                  />
-                </div>
-                <p class="text-center">or</p>
                 <!--Use gmail, facebook, instagram, or apple id -->
                 <div>
                   <button

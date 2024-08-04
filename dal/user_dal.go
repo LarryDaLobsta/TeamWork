@@ -23,16 +23,15 @@ func CreateUser(ctx context.Context, c *fiber.Ctx, client *ent.Client) error {
 		return err
 	}
 
-	err := client.User.
+	createdNewUser, err := client.User.
 		Create().
 		SetFirstName(newUser.FirstName).
 		SetLastName(newUser.LastName).
 		SetUsername(newUser.UserName).
 		SetPassword(newUser.Password).
-		SaveX(ctx) // See if different type of save occurs do to panic
-		// check to make sure the save is successful
+		Save(ctx) // See if different type of save occurs do to panic
 	if err != nil {
-		return fmt.Errorf("Failed creating the new user: %v", err)
+		return fmt.Errorf("Error: %v %v", err, createdNewUser)
 	}
 	return nil
 }

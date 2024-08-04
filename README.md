@@ -95,3 +95,11 @@ July 31st
     --> Under porjects it should have rooms listed built around assignments 
     --> Show current user role in response to project
 --> Chat room should be able to show status of the project and have panels for tracking project status
+
+
+August 3rd
+HAve the login and create user page just need icons for different social media logins
+Can create users and validate that request, need to go through and add sessions to users that can be implemented whether a user is returning or just created an account. Then probably want to create the login dashboard that a user can see after successfully logging in. Some point need to deal with error handling for the users.
+
+
+Then deal with chatrooms, messages, spreadsheets and more....
