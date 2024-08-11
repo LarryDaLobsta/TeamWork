@@ -86,11 +86,14 @@ func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error
 	if checkError = DAL.CreateUser(ctx, c, client); checkError != nil {
 		// return the message and take the user back to create an account
 		return c.SendString(checkError.Error())
-
 		// return c.Redirect("/")
 	}
 	// take the user to the dashboard
-	return c.SendString("Usser created successfully")
+	// return c.SendString("Usser created successfully")
+
+	return c.Render("logindashboard", fiber.Map{
+		//"Todos": todos,
+	})
 }
 
 // update user handler
