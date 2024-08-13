@@ -37,7 +37,7 @@ func indexHandler(c *fiber.Ctx) error {
 	// 	todos = append(todos, res)
 	// }
 
-	return c.Render("index2", fiber.Map{
+	return c.Render("logindashboard", fiber.Map{
 		//"Todos": todos,
 	})
 }
