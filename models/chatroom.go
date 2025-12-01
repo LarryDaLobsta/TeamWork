@@ -4,13 +4,11 @@ package models
 // update users in chatrooms, etc. All things chatrooms
 
 import (
-	_ "encoding/json"
-	_ "fmt"
+	"encoding/json"
+	"fmt"
+	"html"
 	"log"
-	_ "log"
 	"net/http"
-	_ "os"
-
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 )
@@ -33,7 +31,7 @@ type ChatRoom struct {
 	Name      string
 	Project   string
 	ProjectId int
-	clients   map[string]*Client
+	Clients   map[string]*Client
 	broadcast chan *Message
 }
 
@@ -57,7 +55,19 @@ func (c *Client) writeMessage() {
 			return
 		}
 
-		c.Conn.WriteJSON(message)
+		// Build HTML snippet for HTMX to insert
+		htmlMsg := fmt.Sprintf(
+			`<div id="messages" hx-swap-oob="beforeend">
+				<div class="message"><strong>%s:</strong> %s</div>
+				</div>`,
+			html.EscapeString(message.Username),
+			html.EscapeString(message.Content),
+		)
+
+		if err := c.Conn.WriteMessage(websocket.TextMessage, []byte(htmlMsg)); err != nil {
+			log.Println("write error:", err)
+			return
+		}
 	}
 }
 
@@ -69,7 +79,7 @@ func (c *Client) ReadMessage(ChS ChatRoomServer) {
 	}()
 
 	for {
-		_, m, err := c.Conn.ReadMessage()
+		_, raw, err := c.Conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(
 				err,
@@ -83,8 +93,19 @@ func (c *Client) ReadMessage(ChS ChatRoomServer) {
 
 		// handle the message if the web socket connection is still good
 
+		// HTMX WebSocket payload format
+		var payload struct {
+			Text    string                 `json:"text"`
+			Headers map[string]interface{} `json:"HEADERS"`
+		}
+
+		if err := json.Unmarshal(raw, &payload); err != nil {
+			log.Printf("json error: %v", err)
+			continue
+		}
+
 		msg := &ChatMessage{
-			Content:  string(m),
+			Content:  string(raw),
 			RoomID:   c.RoomID,
 			Username: c.Username,
 		}
@@ -118,6 +139,7 @@ func NewChatRoomHandler(h *ChatRoomServer) *ChatRoomHandler {
 
 // Creates a actual chat room server
 func NewChatroomServer() *ChatRoomServer {
+	log.Println("Hello there")
 	// create a new chatroom ent framework to be saved in the database to be saved to the ent database
 	return &ChatRoomServer{
 		Rooms:      make(map[string]*ChatRoom),
@@ -128,6 +150,7 @@ func NewChatroomServer() *ChatRoomServer {
 }
 
 func (ChS *ChatRoomServer) StartServer() {
+	log.Println("Just moving on")
 	for {
 		select {
 		case c1 := <-ChS.Register:
@@ -137,9 +160,9 @@ func (ChS *ChatRoomServer) StartServer() {
 				room := ChS.Rooms[c1.RoomID]
 
 				// check to make sure the user is not already in the room
-				if _, ok := room.clients[c1.ID]; !ok {
+				if _, ok := room.Clients[c1.ID]; !ok {
 					// add the user if he is not in the room already
-					room.clients[c1.ID] = c1
+					room.Clients[c1.ID] = c1
 				}
 
 			}
@@ -151,9 +174,9 @@ func (ChS *ChatRoomServer) StartServer() {
 			if _, ok := ChS.Rooms[c1.RoomID]; ok {
 				room := ChS.Rooms[c1.RoomID]
 
-				if _, ok := room.clients[c1.ID]; ok {
+				if _, ok := room.Clients[c1.ID]; ok {
 					// make sure rooms are not empty
-					if len(ChS.Rooms[c1.RoomID].clients) != 0 {
+					if len(ChS.Rooms[c1.RoomID].Clients) != 0 {
 						// notify room that a user is being removed
 						ChS.broadcast <- &ChatMessage{
 							Content:  "User left the chat",
@@ -163,7 +186,7 @@ func (ChS *ChatRoomServer) StartServer() {
 					}
 
 					// delete the user
-					delete(ChS.Rooms[c1.RoomID].clients, c1.ID)
+					delete(ChS.Rooms[c1.RoomID].Clients, c1.ID)
 
 					// close the channel from the deleted user
 					close(c1.Message)
@@ -175,7 +198,7 @@ func (ChS *ChatRoomServer) StartServer() {
 			// check to make sure the room exists
 			if _, ok := ChS.Rooms[m.RoomID]; ok {
 				// broadcast message to all message channels
-				for _, c1 := range ChS.Rooms[m.RoomID].clients {
+				for _, c1 := range ChS.Rooms[m.RoomID].Clients {
 					c1.Message <- m
 				}
 			}
@@ -205,7 +228,7 @@ func (ChH *ChatRoomHandler) CreateNewRoom(c *fiber.Ctx) error {
 	ChH.ChatRoomServ.Rooms[newRoomReq.ID] = &ChatRoom{
 		ID:      newRoomReq.ID,
 		Name:    newRoomReq.Name,
-		clients: make(map[string]*Client),
+		Clients: make(map[string]*Client),
 	}
 
 	c.Locals("allowed", true)

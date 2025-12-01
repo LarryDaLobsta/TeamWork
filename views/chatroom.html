@@ -17,7 +17,7 @@
 
 <body>
     <div class="container" >
-        <div class="chat-window" hx-ext="ws" ws-connect="/ws">
+        <div hx-ext="ws" ws-connect="/ws/joinRoom/lobby/1234/Bob">
             <div class="messages" id="messages" hx-swap="beforeend" hx-swap-oob="beforeend">
                 <!-- Messages will be appended here -->
             </div>

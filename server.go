@@ -146,11 +146,11 @@ func deleteHandler(c *fiber.Ctx, db *sql.DB) error {
 
 // start of websocket stuff
 func main() {
-	connStr := "postgresql://postgres:gopher@localhost/todos?sslmode=disable"
+	connStr := "postgresql://postgres:postgres@localhost:5432/todos?sslmode=disable"
 	// Connect to database
 	client, err := ent.Open(
 		"postgres",
-		"host=192.168.0.53 port=5432 user=postgres dbname=todos password=postgres sslmode=disable",
+		"host=localhost port=5432 user=postgres dbname=todos password=postgres sslmode=disable",
 	)
 
 	db, err := sql.Open("postgres", connStr)
@@ -180,21 +180,55 @@ func main() {
 		AllowMethods: "GET,POST,PUT,DELETE",
 	}))
 
-	app.Use("/ws", func(c *fiber.Ctx) error {
-		if websocket.IsWebSocketUpgrade(c) {
-			c.Locals("allowed", true)
+	// app.Use("/ws", func(c *fiber.Ctx) error {
+	// 	// if websocket.IsWebSocketUpgrade(c) {
+	// 	// 	log.Println("WS upgrade requested for:", c.Path())
+	// 	// 	c.Locals("allowed", true)
+	// 	// 	log.Println("Upgraded the websocket")
+	// 	// 	c.Next()
+	// 	// 	// can also handle taking apart token can't do that in websocket conn vs ctx
+	// 	// } 
 
-			// can also handle taking apart token can't do that in websocket conn vs ctx
-			log.Print("Upgraded web socket")
+	// 	// return fiber.ErrUpgradeRequired
+	// })
 
-			c.Next()
-		}
 
-		// do not need to upgrade unless going to use web socket functionality
-		return nil
-	})
+	// app.Get("/ws", websocket.New(func(c *websocket.Conn) {
+	// 	log.Println("Made it into the webserver")
+	// 	defer c.Close()
+		
+	// 	if err := c.WriteMessage(websocket.TextMessage, []byte("Hello there, Welcome in")); err != nil {
+	// 		log.Println("write error:", err)
+	// 		return
+	// 	}
+
+	// 	// // Echo loop
+	// 	for {
+	// 		mt, msg, err := c.ReadMessage()
+	// 		if err != nil {
+	// 			log.Println("read error:", err)
+	// 			break
+	// 		}
+	
+	// 		log.Printf("Received from client: %s", msg)
+	
+	// 		if err := c.WriteMessage(mt, msg); err != nil {
+	// 			log.Println("write error:", err)
+	// 			break
+	// 		}
+	// 	}
+	// }))
 
 	chatHub := CHAT.NewChatroomServer()
+
+	// Create the default "lobby" room
+	chatHub.Rooms["lobby"] = &CHAT.ChatRoom{
+		ID:      "lobby",
+		Name:    "Lobby",
+		Project: "default",
+		Clients: make(map[string]*CHAT.Client),
+	}
+	
 	chatHubHandler := CHAT.NewChatRoomHandler(chatHub)
 
 	go chatHub.StartServer()
@@ -202,11 +236,17 @@ func main() {
 		return chatHubHandler.CreateNewRoom(c)
 	})
 
-	app.Get("/ws/joinRoom/:roomId", websocket.New(func(c *websocket.Conn) {
-		log.Println("Made it into a chatroom")
-		chatHubHandler.JoinRoom(c)
-		// join a room
-	}))
+	app.Get("/ws/joinRoom/:roomId/:userId/:username",
+    websocket.New(func(c *websocket.Conn) {
+        log.Println("WS handler hit:",
+            c.Params("roomId"),
+            c.Params("userId"),
+            c.Params("username"),
+        )
+
+        chatHubHandler.JoinRoom(c)
+    }),
+)
 
 	// this will return the default login page
 	app.Get("/", func(c *fiber.Ctx) error {
@@ -215,6 +255,7 @@ func main() {
 	})
 
 	app.Get("/chatroom", func(c *fiber.Ctx) error {
+		log.Println("Here we goooo")
 		return c.Render("chatroom", fiber.Map{})
 	})
 
