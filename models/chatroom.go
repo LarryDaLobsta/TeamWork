@@ -65,7 +65,7 @@ func (c *Client) writeMessage() {
 		)
 
 		if err := c.Conn.WriteMessage(websocket.TextMessage, []byte(htmlMsg)); err != nil {
-			log.Println("write error:", err)
+			log.Println("write message error:", err)
 			return
 		}
 	}
@@ -86,12 +86,13 @@ func (c *Client) ReadMessage(ChS ChatRoomServer) {
 				websocket.CloseGoingAway,
 				websocket.CloseAbnormalClosure,
 			) {
-				log.Printf(" error: %v", err)
+				log.Printf("read message error: %v", err)
 			}
 			break
 		}
 
 		// handle the message if the web socket connection is still good
+		log.Printf("Raw from client: %s", raw)
 
 		// HTMX WebSocket payload format
 		var payload struct {
@@ -104,8 +105,10 @@ func (c *Client) ReadMessage(ChS ChatRoomServer) {
 			continue
 		}
 
+		log.Printf("Parsed text from %s: %s", c.Username, payload.Text)
+
 		msg := &ChatMessage{
-			Content:  string(raw),
+			Content:  payload.Text,
 			RoomID:   c.RoomID,
 			Username: c.Username,
 		}
@@ -150,61 +153,39 @@ func NewChatroomServer() *ChatRoomServer {
 }
 
 func (ChS *ChatRoomServer) StartServer() {
-	log.Println("Just moving on")
+	log.Println("ChatRoomServer started")
 	for {
-		select {
-		case c1 := <-ChS.Register:
+        select {
+        case c1 := <-ChS.Register:
+            if room, ok := ChS.Rooms[c1.RoomID]; ok {
+                if _, exists := room.Clients[c1.ID]; !exists {
+                    log.Printf("Register: %s joined room %s", c1.Username, c1.RoomID)
+                    room.Clients[c1.ID] = c1
+                }
+            } else {
+                log.Printf("Register: room %s not found", c1.RoomID)
+            }
 
-			// check to make sure the room exists
-			if _, ok := ChS.Rooms[c1.RoomID]; ok {
-				room := ChS.Rooms[c1.RoomID]
+        case c1 := <-ChS.Unregister:
+            if room, ok := ChS.Rooms[c1.RoomID]; ok {
+                if _, exists := room.Clients[c1.ID]; exists {
+                    log.Printf("Unregister: %s leaving room %s", c1.Username, c1.RoomID)
+                    delete(room.Clients, c1.ID)
+                    close(c1.Message)
+                }
+            }
 
-				// check to make sure the user is not already in the room
-				if _, ok := room.Clients[c1.ID]; !ok {
-					// add the user if he is not in the room already
-					room.Clients[c1.ID] = c1
-				}
-
-			}
-
-		// Removing a user
-		case c1 := <-ChS.Unregister:
-
-			// Make sure that room exists
-			if _, ok := ChS.Rooms[c1.RoomID]; ok {
-				room := ChS.Rooms[c1.RoomID]
-
-				if _, ok := room.Clients[c1.ID]; ok {
-					// make sure rooms are not empty
-					if len(ChS.Rooms[c1.RoomID].Clients) != 0 {
-						// notify room that a user is being removed
-						ChS.broadcast <- &ChatMessage{
-							Content:  "User left the chat",
-							RoomID:   c1.RoomID,
-							Username: c1.Username,
-						}
-					}
-
-					// delete the user
-					delete(ChS.Rooms[c1.RoomID].Clients, c1.ID)
-
-					// close the channel from the deleted user
-					close(c1.Message)
-				}
-			}
-
-			// Broadcasting a message
-		case m := <-ChS.broadcast:
-			// check to make sure the room exists
-			if _, ok := ChS.Rooms[m.RoomID]; ok {
-				// broadcast message to all message channels
-				for _, c1 := range ChS.Rooms[m.RoomID].Clients {
-					c1.Message <- m
-				}
-			}
-
-		}
-	}
+        case m := <-ChS.broadcast:
+            if room, ok := ChS.Rooms[m.RoomID]; ok {
+                log.Printf("Broadcast in %s: %s: %s", m.RoomID, m.Username, m.Content)
+                for _, c1 := range room.Clients {
+                    c1.Message <- m
+                }
+            } else {
+                log.Printf("Broadcast: room %s not found", m.RoomID)
+            }
+        }
+    }
 }
 
 // for creating a room
@@ -250,7 +231,7 @@ func (ChH *ChatRoomHandler) JoinRoom(c *websocket.Conn) {
 		Conn:     c,
 		Message:  make(chan *ChatMessage, 10),
 		ID:       c.Params("userId"),
-		RoomID:   c.Query("roomId"),
+		RoomID:   c.Params("roomId"),
 		Username: c.Params("username"),
 	}
 
@@ -260,7 +241,7 @@ func (ChH *ChatRoomHandler) JoinRoom(c *websocket.Conn) {
 	newUserMessage := &ChatMessage{
 		Content:  "A new user has joined the chat room",
 		RoomID:   c.Params("roomId"),
-		Username: c.Query("username"),
+		Username: c.Params("username"),
 	}
 
 	// register the new user

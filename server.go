@@ -180,17 +180,16 @@ func main() {
 		AllowMethods: "GET,POST,PUT,DELETE",
 	}))
 
-	// app.Use("/ws", func(c *fiber.Ctx) error {
-	// 	// if websocket.IsWebSocketUpgrade(c) {
-	// 	// 	log.Println("WS upgrade requested for:", c.Path())
-	// 	// 	c.Locals("allowed", true)
-	// 	// 	log.Println("Upgraded the websocket")
-	// 	// 	c.Next()
-	// 	// 	// can also handle taking apart token can't do that in websocket conn vs ctx
-	// 	// } 
+	app.Use("/ws", func(c *fiber.Ctx) error {
+		if websocket.IsWebSocketUpgrade(c) {
+			c.Locals("allowed", true)
+			log.Println("Upgraded the websocket")
+			return c.Next()
+			// can also handle taking apart token can't do that in websocket conn vs ctx
+		} 
 
-	// 	// return fiber.ErrUpgradeRequired
-	// })
+		return fiber.ErrUpgradeRequired
+	})
 
 
 	// app.Get("/ws", websocket.New(func(c *websocket.Conn) {
@@ -221,7 +220,7 @@ func main() {
 
 	chatHub := CHAT.NewChatroomServer()
 
-	// Create the default "lobby" room
+	// Create the default "lobby" room can convert to a function later
 	chatHub.Rooms["lobby"] = &CHAT.ChatRoom{
 		ID:      "lobby",
 		Name:    "Lobby",
