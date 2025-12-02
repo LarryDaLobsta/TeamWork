@@ -108,3 +108,7 @@ Cleaned up middleware issues and also added a starter lobby.
 The next thing to work on is logging in a user or having a user create account
 Then show a dashboard of projects/ chat rooms a user is a part of
 Clean up how the chat rooms look add the ability to upload files, emojis, and etc.
+
+December 2nd 2025
+Refactored and cleaned up connection string 
+Working on cleaning up Chathubs, Servers, and routes
