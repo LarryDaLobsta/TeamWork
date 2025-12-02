@@ -146,26 +146,17 @@ func deleteHandler(c *fiber.Ctx, db *sql.DB) error {
 
 // start of websocket stuff
 func main() {
-	connStr := "postgresql://postgres:postgres@localhost:5432/todos?sslmode=disable"
-	// Connect to database
-	client, err := ent.Open(
-		"postgres",
-		"host=localhost port=5432 user=postgres dbname=todos password=postgres sslmode=disable",
-	)
-
-	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		log.Fatalf("failed opening connection to postgres: %v", err)
-	}
-
-	defer client.Close()
-
 	ctx := context.Background()
 
-	// running automigration
-	if err := client.Schema.Create(ctx); err != nil {
-		log.Fatalf("failed creating schema resources: %v", err)
+	dbConn, err := DAL.NewDbConnection(ctx)
+
+	if err != nil {
+		log.Fatalf("failed to init DB: %v", err)
 	}
+
+	defer dbConn.SQL.Close()
+	defer dbConn.Ent.Close()
+
 
 	engine := html.New("./views", ".html")
 	app := fiber.New(fiber.Config{
@@ -189,6 +180,14 @@ func main() {
 		} 
 
 		return fiber.ErrUpgradeRequired
+	})
+
+	// database health check
+	app.Get("/health/db", func(c *fiber.Ctx) error {
+		if err := dbConn.DbHealthCheck(c.Context()); err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+		}
+		return c.SendString("ok")
 	})
 
 
@@ -261,17 +260,17 @@ func main() {
 	// This will deal with the post methods adding new todos, new users, new chatrooms, etc
 	app.Post("/", func(cfib *fiber.Ctx) error {
 		// adding user to the system
-		return newUserHandler(cfib, client, ctx)
+		return newUserHandler(cfib, dbConn.Ent, ctx)
 		// return postHandler(c, db)
 	})
 
 	// this is for a single parameter at the moment
 	app.Put("/update/:olditem/:newitem", func(c *fiber.Ctx) error {
-		return putHandler(c, db)
+		return putHandler(c, dbConn.SQL)
 	})
 
 	app.Delete("/delete", func(c *fiber.Ctx) error {
-		return deleteHandler(c, db)
+		return deleteHandler(c, dbConn.SQL)
 	})
 
 	port := os.Getenv("PORT")
