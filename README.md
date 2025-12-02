@@ -98,8 +98,13 @@ July 31st
 
 
 August 3rd
-HAve the login and create user page just need icons for different social media logins
+Have the login and create user page just need icons for different social media logins
 Can create users and validate that request, need to go through and add sessions to users that can be implemented whether a user is returning or just created an account. Then probably want to create the login dashboard that a user can see after successfully logging in. Some point need to deal with error handling for the users.
 
 
 Then deal with chatrooms, messages, spreadsheets and more....
+December 1st 2025
+Cleaned up middleware issues and also added a starter lobby.
+The next thing to work on is logging in a user or having a user create account
+Then show a dashboard of projects/ chat rooms a user is a part of
+Clean up how the chat rooms look add the ability to upload files, emojis, and etc.
