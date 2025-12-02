@@ -13,14 +13,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// websocket server structs
-type ChatRoomServer struct {
-	chatRoomServerName string
-	broadcast          chan *ChatMessage
-	Rooms              map[string]*ChatRoom
-	Register           chan *Client
-	Unregister         chan *Client
-}
+
 
 // This is the chat room struct for each chatroom per project
 // Need to make sure each pkoject gets assigned one ChatRoom
@@ -42,6 +35,11 @@ type Client struct {
 	RoomID   string `json:"roomid"`
 	Username string `json:"username"`
 }
+
+type ChatRoomHandler struct {
+	ChatRoomServ *ChatRoomServer
+}
+
 
 // write the message to the message attibute for client
 func (c *Client) writeMessage() {
@@ -118,20 +116,8 @@ func (c *Client) ReadMessage(ChS ChatRoomServer) {
 	}
 }
 
-type ChatMessage struct {
-	Content  string `json:"content"`
-	RoomID   string `json:"roomId"`
-	Username string `json:"username"`
-}
 
-type CreateRoomReq struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
 
-type ChatRoomHandler struct {
-	ChatRoomServ *ChatRoomServer
-}
 
 // Handler to hold the chat room server
 func NewChatRoomHandler(h *ChatRoomServer) *ChatRoomHandler {
@@ -140,53 +126,8 @@ func NewChatRoomHandler(h *ChatRoomServer) *ChatRoomHandler {
 	}
 }
 
-// Creates a actual chat room server
-func NewChatroomServer() *ChatRoomServer {
-	log.Println("Hello there")
-	// create a new chatroom ent framework to be saved in the database to be saved to the ent database
-	return &ChatRoomServer{
-		Rooms:      make(map[string]*ChatRoom),
-		broadcast:  make(chan *ChatMessage, 5),
-		Register:   make(chan *Client),
-		Unregister: make(chan *Client),
-	}
-}
 
-func (ChS *ChatRoomServer) StartServer() {
-	log.Println("ChatRoomServer started")
-	for {
-        select {
-        case c1 := <-ChS.Register:
-            if room, ok := ChS.Rooms[c1.RoomID]; ok {
-                if _, exists := room.Clients[c1.ID]; !exists {
-                    log.Printf("Register: %s joined room %s", c1.Username, c1.RoomID)
-                    room.Clients[c1.ID] = c1
-                }
-            } else {
-                log.Printf("Register: room %s not found", c1.RoomID)
-            }
 
-        case c1 := <-ChS.Unregister:
-            if room, ok := ChS.Rooms[c1.RoomID]; ok {
-                if _, exists := room.Clients[c1.ID]; exists {
-                    log.Printf("Unregister: %s leaving room %s", c1.Username, c1.RoomID)
-                    delete(room.Clients, c1.ID)
-                    close(c1.Message)
-                }
-            }
-
-        case m := <-ChS.broadcast:
-            if room, ok := ChS.Rooms[m.RoomID]; ok {
-                log.Printf("Broadcast in %s: %s: %s", m.RoomID, m.Username, m.Content)
-                for _, c1 := range room.Clients {
-                    c1.Message <- m
-                }
-            } else {
-                log.Printf("Broadcast: room %s not found", m.RoomID)
-            }
-        }
-    }
-}
 
 // for creating a room
 func (ChH *ChatRoomHandler) CreateNewRoom(c *fiber.Ctx) error {
@@ -231,15 +172,6 @@ func (ChH *ChatRoomHandler) JoinRoom(c *websocket.Conn) {
 		Conn:     c,
 		Message:  make(chan *ChatMessage, 10),
 		ID:       c.Params("userId"),
-		RoomID:   c.Params("roomId"),
-		Username: c.Params("username"),
-	}
-
-	// If succesfful create client, create messsages, register user to hub
-
-	// create the messages to notify new user joining
-	newUserMessage := &ChatMessage{
-		Content:  "A new user has joined the chat room",
 		RoomID:   c.Params("roomId"),
 		Username: c.Params("username"),
 	}
