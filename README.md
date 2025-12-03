@@ -111,5 +111,6 @@ Clean up how the chat rooms look add the ability to upload files, emojis, and et
 
 December 2nd 2025
 Refactored and cleaned up connection string 
-Working on cleaning up Chathubs, Servers, and routes
-Need to debug to make sure added files chatserverhub.go and message.go are working correctly.
+Need to clean up chatroom.go with chatgpt suggestions and the handler to reflect new chatroom additions
+Then need to test and make sure everything still works
+Then create login and join ability for users
