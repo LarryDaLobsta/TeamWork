@@ -17,3 +17,61 @@ type ChatRoom struct {
 }
 
 
+package models
+
+
+import (
+	"net/http"
+	"github.com/gofiber/contrib/websocket"
+	"github.com/gofiber/fiber/v2"
+)
+
+type ChatRoomHandler struct {
+	ChatRoomServ *ChatRoomServer
+}
+
+func NewChatRoom(id, name string) *ChatRoom {
+    return &ChatRoom{
+        ID:      id,
+        Name:    name,
+        Clients: make(map[string]*Client),
+    }
+}
+
+func (r *ChatRoom) AddClient(c *Client) bool 
+{
+	// check if the user exists in the room already
+	if _, exists := r.Clients[c.ID]; exists {
+		// already in the room
+		return false
+	}
+
+	// add user if not there
+	r.Clients[c.ID] = c
+
+	return true
+}
+
+func (r *ChatRoom) RemoveClient(c *Client) bool 
+{
+	// check if the user exists in the room already
+	if _, exists := r.Clients[c.ID]; !exists {
+		// already removed
+		return false
+	}
+
+	// delete from room
+	delete(r.Clients, c.ID)
+
+	// Close channel for the user removed
+	close(c.Message)
+
+	return true
+
+}
+
+func (r *ChatRoom) IsEmpty() bool 
+{
+	return len(r.Clients) == 0
+}
+

@@ -12,9 +12,9 @@ type ChatRoomHandler struct {
 }
 
 // Handler to hold the chat room server
-func NewChatRoomHandler(h *ChatRoomServer) *ChatRoomHandler {
+func NewChatRoomHandler(ChH *ChatRoomServer) *ChatRoomHandler {
 	return &ChatRoomHandler{
-		ChatRoomServ: h,
+		ChatRoomServ: ChH,
 	}
 }
 
@@ -34,7 +34,7 @@ func (ChH *ChatRoomHandler) CreateNewRoom(c *fiber.Ctx) error {
 	}
 
 	// Optional: prevent duplicate rooms
-	if _, exists := h.ChatRoomServ.Rooms[newRoomReq.ID]; exists {
+	if _, exists := ChH.ChatRoomServ.Rooms[newRoomReq.ID]; exists {
 		return c.Status(http.StatusConflict).JSON(fiber.Map{
 			"error": "room already exists",
 		})
@@ -49,7 +49,7 @@ func (ChH *ChatRoomHandler) CreateNewRoom(c *fiber.Ctx) error {
 	}
 
 	c.Locals("allowed", true)
-	return c.JSON(fiber.Map{
+	return c.Status(http.StatusOK).JSON(fiber.Map{
 		"ID":     newRoomReq.ID,
 		"Name":   newRoomReq.Name,
 		"status": http.StatusOK,
@@ -78,8 +78,8 @@ func (ChH *ChatRoomHandler) JoinRoom(c *websocket.Conn) {
 	// system message: user joined
 	newUserMessage := &ChatMessage{
 		Content:  "A new user has joined the chat room",
-		RoomID:   roomID,
-		Username: username,
+		RoomID:   c.Params("roomId"),
+		Username: c.Params("username"),
 	}
 
 

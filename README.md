@@ -114,3 +114,8 @@ Refactored and cleaned up connection string
 Need to clean up chatroom.go with chatgpt suggestions and the handler to reflect new chatroom additions
 Then need to test and make sure everything still works
 Then create login and join ability for users
+
+December 3rd 2025
+Need to put all the modularized code together
+Test that it works
+then add create login and join ability for users
