@@ -2,10 +2,6 @@ package models
 // struct for messages
 
 import (
-  "fmt"
-  "github.com/google/uuid"
-  "encoding/json"
-  "log"
 )
 
 type CreateRoomReq struct {

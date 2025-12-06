@@ -190,34 +190,7 @@ func main() {
 		return c.SendString("ok")
 	})
 
-
-	// app.Get("/ws", websocket.New(func(c *websocket.Conn) {
-	// 	log.Println("Made it into the webserver")
-	// 	defer c.Close()
-		
-	// 	if err := c.WriteMessage(websocket.TextMessage, []byte("Hello there, Welcome in")); err != nil {
-	// 		log.Println("write error:", err)
-	// 		return
-	// 	}
-
-	// 	// // Echo loop
-	// 	for {
-	// 		mt, msg, err := c.ReadMessage()
-	// 		if err != nil {
-	// 			log.Println("read error:", err)
-	// 			break
-	// 		}
-	
-	// 		log.Printf("Received from client: %s", msg)
-	
-	// 		if err := c.WriteMessage(mt, msg); err != nil {
-	// 			log.Println("write error:", err)
-	// 			break
-	// 		}
-	// 	}
-	// }))
-
-	chatHub := CHAT.NewChatroomServer()
+	chatHub := CHAT.NewChatRoomServer()
 
 	// Create the default "lobby" room can convert to a function later
 	chatHub.Rooms["lobby"] = &CHAT.ChatRoom{
@@ -249,6 +222,7 @@ func main() {
 	// this will return the default login page
 	app.Get("/", func(c *fiber.Ctx) error {
 		// render the login and join form
+		log.Println("Home landing page.")
 		return indexHandler(c)
 	})
 

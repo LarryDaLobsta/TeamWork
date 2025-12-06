@@ -1,13 +1,8 @@
 package models
 
 import (
-	"encoding/json"
 	"fmt"
-	"html"
 	"log"
-	"net/http"
-	"github.com/gofiber/contrib/websocket"
-	"github.com/gofiber/fiber/v2"
 )
 
 
@@ -55,7 +50,7 @@ func (ChS *ChatRoomServer) StartServer() {
 
         case client := <-ChS.Unregister:
 			// make sure room exists
-			room, ok := ChS.Rooms[client.RooomID]
+			room, ok := ChS.Rooms[client.RoomID]
 			if !ok {
 				log.Printf("Register: room %s not found", client.RoomID)
 				continue

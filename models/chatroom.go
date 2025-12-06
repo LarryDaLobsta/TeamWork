@@ -7,6 +7,9 @@ package models
 // This is the chat room struct for each chatroom per project
 // Need to make sure each pkoject gets assigned one ChatRoom
 // until I can make smaller chatrooms for individual pieces
+import (
+)
+
 
 type ChatRoom struct {
 	ID        string
@@ -17,19 +20,6 @@ type ChatRoom struct {
 }
 
 
-package models
-
-
-import (
-	"net/http"
-	"github.com/gofiber/contrib/websocket"
-	"github.com/gofiber/fiber/v2"
-)
-
-type ChatRoomHandler struct {
-	ChatRoomServ *ChatRoomServer
-}
-
 func NewChatRoom(id, name string) *ChatRoom {
     return &ChatRoom{
         ID:      id,
@@ -38,8 +28,7 @@ func NewChatRoom(id, name string) *ChatRoom {
     }
 }
 
-func (r *ChatRoom) AddClient(c *Client) bool 
-{
+func (r *ChatRoom) AddClient(c *Client) bool {
 	// check if the user exists in the room already
 	if _, exists := r.Clients[c.ID]; exists {
 		// already in the room
@@ -52,8 +41,7 @@ func (r *ChatRoom) AddClient(c *Client) bool
 	return true
 }
 
-func (r *ChatRoom) RemoveClient(c *Client) bool 
-{
+func (r *ChatRoom) RemoveClient(c *Client) bool {
 	// check if the user exists in the room already
 	if _, exists := r.Clients[c.ID]; !exists {
 		// already removed
@@ -70,8 +58,7 @@ func (r *ChatRoom) RemoveClient(c *Client) bool
 
 }
 
-func (r *ChatRoom) IsEmpty() bool 
-{
+func (r *ChatRoom) IsEmpty() bool {
 	return len(r.Clients) == 0
 }
 
