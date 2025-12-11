@@ -15,13 +15,17 @@ import (
 // Developer note need to check the new addition of a user
 //
 //	Check to see if a user has the same user name and password
-func CreateUser(ctx context.Context, c *fiber.Ctx, client *ent.Client) error {
-	newUser := new(M.User)
-	// grab and put in struct
-	// return false if not able to do it
-	if err := c.BodyParser(newUser); err != nil {
-		return err
-	}
+func CreateUser(newUser M.User, client *ent.Client, ctx context.Context) error {
+	// THis should be put in the route that is handling a new user being passed from the client
+	// newUser := new(M.User)
+	// // grab and put in struct
+	// // return false if not able to do it
+	// if err := c.BodyParser(newUser); err != nil {
+	// 	return err
+	// }
+	// also need to update all parameters getting issue about 
+
+	// end of that piece
 
 	createdNewUser, err := client.User.
 		Create().

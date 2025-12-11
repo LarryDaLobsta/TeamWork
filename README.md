@@ -119,3 +119,9 @@ December 3rd 2025
 Need to put all the modularized code together
 Test that it works
 then add create login and join ability for users
+
+
+December 10th 2025
+Modularized code does work now working on
+login and join look bll/auth_signup.go, dal/user_dal.go, and server.go
+    -- These are putting together the first round of logic for me in terms of creating a user just need some clean up there and also in the server.go file as well
