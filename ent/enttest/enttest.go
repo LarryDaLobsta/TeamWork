@@ -4,11 +4,12 @@ package enttest
 
 import (
 	"context"
-	"hello/ent"
-	// required by schema hooks.
-	_ "hello/ent/runtime"
 
-	"hello/ent/migrate"
+	"teamplayer/ent"
+	// required by schema hooks.
+	_ "teamplayer/ent/runtime"
+
+	"teamplayer/ent/migrate"
 
 	"entgo.io/ent/dialect/sql/schema"
 )

@@ -25,112 +25,112 @@ type MessageUpdate struct {
 }
 
 // Where appends a list predicates to the MessageUpdate builder.
-func (mu *MessageUpdate) Where(ps ...predicate.Message) *MessageUpdate {
-	mu.mutation.Where(ps...)
-	return mu
+func (_u *MessageUpdate) Where(ps ...predicate.Message) *MessageUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetMessageUUID sets the "message_uuid" field.
-func (mu *MessageUpdate) SetMessageUUID(u uuid.UUID) *MessageUpdate {
-	mu.mutation.SetMessageUUID(u)
-	return mu
+func (_u *MessageUpdate) SetMessageUUID(v uuid.UUID) *MessageUpdate {
+	_u.mutation.SetMessageUUID(v)
+	return _u
 }
 
 // SetNillableMessageUUID sets the "message_uuid" field if the given value is not nil.
-func (mu *MessageUpdate) SetNillableMessageUUID(u *uuid.UUID) *MessageUpdate {
-	if u != nil {
-		mu.SetMessageUUID(*u)
+func (_u *MessageUpdate) SetNillableMessageUUID(v *uuid.UUID) *MessageUpdate {
+	if v != nil {
+		_u.SetMessageUUID(*v)
 	}
-	return mu
+	return _u
 }
 
 // SetSender sets the "sender" field.
-func (mu *MessageUpdate) SetSender(s string) *MessageUpdate {
-	mu.mutation.SetSender(s)
-	return mu
+func (_u *MessageUpdate) SetSender(v string) *MessageUpdate {
+	_u.mutation.SetSender(v)
+	return _u
 }
 
 // SetNillableSender sets the "sender" field if the given value is not nil.
-func (mu *MessageUpdate) SetNillableSender(s *string) *MessageUpdate {
-	if s != nil {
-		mu.SetSender(*s)
+func (_u *MessageUpdate) SetNillableSender(v *string) *MessageUpdate {
+	if v != nil {
+		_u.SetSender(*v)
 	}
-	return mu
+	return _u
 }
 
 // SetReceiver sets the "receiver" field.
-func (mu *MessageUpdate) SetReceiver(s string) *MessageUpdate {
-	mu.mutation.SetReceiver(s)
-	return mu
+func (_u *MessageUpdate) SetReceiver(v string) *MessageUpdate {
+	_u.mutation.SetReceiver(v)
+	return _u
 }
 
 // SetNillableReceiver sets the "receiver" field if the given value is not nil.
-func (mu *MessageUpdate) SetNillableReceiver(s *string) *MessageUpdate {
-	if s != nil {
-		mu.SetReceiver(*s)
+func (_u *MessageUpdate) SetNillableReceiver(v *string) *MessageUpdate {
+	if v != nil {
+		_u.SetReceiver(*v)
 	}
-	return mu
+	return _u
 }
 
 // SetSendDate sets the "send_date" field.
-func (mu *MessageUpdate) SetSendDate(t time.Time) *MessageUpdate {
-	mu.mutation.SetSendDate(t)
-	return mu
+func (_u *MessageUpdate) SetSendDate(v time.Time) *MessageUpdate {
+	_u.mutation.SetSendDate(v)
+	return _u
 }
 
 // SetNillableSendDate sets the "send_date" field if the given value is not nil.
-func (mu *MessageUpdate) SetNillableSendDate(t *time.Time) *MessageUpdate {
-	if t != nil {
-		mu.SetSendDate(*t)
+func (_u *MessageUpdate) SetNillableSendDate(v *time.Time) *MessageUpdate {
+	if v != nil {
+		_u.SetSendDate(*v)
 	}
-	return mu
+	return _u
 }
 
 // SetReceivedDate sets the "received_date" field.
-func (mu *MessageUpdate) SetReceivedDate(t time.Time) *MessageUpdate {
-	mu.mutation.SetReceivedDate(t)
-	return mu
+func (_u *MessageUpdate) SetReceivedDate(v time.Time) *MessageUpdate {
+	_u.mutation.SetReceivedDate(v)
+	return _u
 }
 
 // SetNillableReceivedDate sets the "received_date" field if the given value is not nil.
-func (mu *MessageUpdate) SetNillableReceivedDate(t *time.Time) *MessageUpdate {
-	if t != nil {
-		mu.SetReceivedDate(*t)
+func (_u *MessageUpdate) SetNillableReceivedDate(v *time.Time) *MessageUpdate {
+	if v != nil {
+		_u.SetReceivedDate(*v)
 	}
-	return mu
+	return _u
 }
 
 // SetMessage sets the "message" field.
-func (mu *MessageUpdate) SetMessage(s []string) *MessageUpdate {
-	mu.mutation.SetMessage(s)
-	return mu
+func (_u *MessageUpdate) SetMessage(v []string) *MessageUpdate {
+	_u.mutation.SetMessage(v)
+	return _u
 }
 
-// AppendMessage appends s to the "message" field.
-func (mu *MessageUpdate) AppendMessage(s []string) *MessageUpdate {
-	mu.mutation.AppendMessage(s)
-	return mu
+// AppendMessage appends value to the "message" field.
+func (_u *MessageUpdate) AppendMessage(v []string) *MessageUpdate {
+	_u.mutation.AppendMessage(v)
+	return _u
 }
 
 // ClearMessage clears the value of the "message" field.
-func (mu *MessageUpdate) ClearMessage() *MessageUpdate {
-	mu.mutation.ClearMessage()
-	return mu
+func (_u *MessageUpdate) ClearMessage() *MessageUpdate {
+	_u.mutation.ClearMessage()
+	return _u
 }
 
 // Mutation returns the MessageMutation object of the builder.
-func (mu *MessageUpdate) Mutation() *MessageMutation {
-	return mu.mutation
+func (_u *MessageUpdate) Mutation() *MessageMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (mu *MessageUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, mu.sqlSave, mu.mutation, mu.hooks)
+func (_u *MessageUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (mu *MessageUpdate) SaveX(ctx context.Context) int {
-	affected, err := mu.Save(ctx)
+func (_u *MessageUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -138,54 +138,54 @@ func (mu *MessageUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (mu *MessageUpdate) Exec(ctx context.Context) error {
-	_, err := mu.Save(ctx)
+func (_u *MessageUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mu *MessageUpdate) ExecX(ctx context.Context) {
-	if err := mu.Exec(ctx); err != nil {
+func (_u *MessageUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (mu *MessageUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *MessageUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(message.Table, message.Columns, sqlgraph.NewFieldSpec(message.FieldID, field.TypeInt))
-	if ps := mu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := mu.mutation.MessageUUID(); ok {
+	if value, ok := _u.mutation.MessageUUID(); ok {
 		_spec.SetField(message.FieldMessageUUID, field.TypeUUID, value)
 	}
-	if value, ok := mu.mutation.Sender(); ok {
+	if value, ok := _u.mutation.Sender(); ok {
 		_spec.SetField(message.FieldSender, field.TypeString, value)
 	}
-	if value, ok := mu.mutation.Receiver(); ok {
+	if value, ok := _u.mutation.Receiver(); ok {
 		_spec.SetField(message.FieldReceiver, field.TypeString, value)
 	}
-	if value, ok := mu.mutation.SendDate(); ok {
+	if value, ok := _u.mutation.SendDate(); ok {
 		_spec.SetField(message.FieldSendDate, field.TypeTime, value)
 	}
-	if value, ok := mu.mutation.ReceivedDate(); ok {
+	if value, ok := _u.mutation.ReceivedDate(); ok {
 		_spec.SetField(message.FieldReceivedDate, field.TypeTime, value)
 	}
-	if value, ok := mu.mutation.Message(); ok {
+	if value, ok := _u.mutation.Message(); ok {
 		_spec.SetField(message.FieldMessage, field.TypeJSON, value)
 	}
-	if value, ok := mu.mutation.AppendedMessage(); ok {
+	if value, ok := _u.mutation.AppendedMessage(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, message.FieldMessage, value)
 		})
 	}
-	if mu.mutation.MessageCleared() {
+	if _u.mutation.MessageCleared() {
 		_spec.ClearField(message.FieldMessage, field.TypeJSON)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, mu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{message.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -193,8 +193,8 @@ func (mu *MessageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	mu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // MessageUpdateOne is the builder for updating a single Message entity.
@@ -206,119 +206,119 @@ type MessageUpdateOne struct {
 }
 
 // SetMessageUUID sets the "message_uuid" field.
-func (muo *MessageUpdateOne) SetMessageUUID(u uuid.UUID) *MessageUpdateOne {
-	muo.mutation.SetMessageUUID(u)
-	return muo
+func (_u *MessageUpdateOne) SetMessageUUID(v uuid.UUID) *MessageUpdateOne {
+	_u.mutation.SetMessageUUID(v)
+	return _u
 }
 
 // SetNillableMessageUUID sets the "message_uuid" field if the given value is not nil.
-func (muo *MessageUpdateOne) SetNillableMessageUUID(u *uuid.UUID) *MessageUpdateOne {
-	if u != nil {
-		muo.SetMessageUUID(*u)
+func (_u *MessageUpdateOne) SetNillableMessageUUID(v *uuid.UUID) *MessageUpdateOne {
+	if v != nil {
+		_u.SetMessageUUID(*v)
 	}
-	return muo
+	return _u
 }
 
 // SetSender sets the "sender" field.
-func (muo *MessageUpdateOne) SetSender(s string) *MessageUpdateOne {
-	muo.mutation.SetSender(s)
-	return muo
+func (_u *MessageUpdateOne) SetSender(v string) *MessageUpdateOne {
+	_u.mutation.SetSender(v)
+	return _u
 }
 
 // SetNillableSender sets the "sender" field if the given value is not nil.
-func (muo *MessageUpdateOne) SetNillableSender(s *string) *MessageUpdateOne {
-	if s != nil {
-		muo.SetSender(*s)
+func (_u *MessageUpdateOne) SetNillableSender(v *string) *MessageUpdateOne {
+	if v != nil {
+		_u.SetSender(*v)
 	}
-	return muo
+	return _u
 }
 
 // SetReceiver sets the "receiver" field.
-func (muo *MessageUpdateOne) SetReceiver(s string) *MessageUpdateOne {
-	muo.mutation.SetReceiver(s)
-	return muo
+func (_u *MessageUpdateOne) SetReceiver(v string) *MessageUpdateOne {
+	_u.mutation.SetReceiver(v)
+	return _u
 }
 
 // SetNillableReceiver sets the "receiver" field if the given value is not nil.
-func (muo *MessageUpdateOne) SetNillableReceiver(s *string) *MessageUpdateOne {
-	if s != nil {
-		muo.SetReceiver(*s)
+func (_u *MessageUpdateOne) SetNillableReceiver(v *string) *MessageUpdateOne {
+	if v != nil {
+		_u.SetReceiver(*v)
 	}
-	return muo
+	return _u
 }
 
 // SetSendDate sets the "send_date" field.
-func (muo *MessageUpdateOne) SetSendDate(t time.Time) *MessageUpdateOne {
-	muo.mutation.SetSendDate(t)
-	return muo
+func (_u *MessageUpdateOne) SetSendDate(v time.Time) *MessageUpdateOne {
+	_u.mutation.SetSendDate(v)
+	return _u
 }
 
 // SetNillableSendDate sets the "send_date" field if the given value is not nil.
-func (muo *MessageUpdateOne) SetNillableSendDate(t *time.Time) *MessageUpdateOne {
-	if t != nil {
-		muo.SetSendDate(*t)
+func (_u *MessageUpdateOne) SetNillableSendDate(v *time.Time) *MessageUpdateOne {
+	if v != nil {
+		_u.SetSendDate(*v)
 	}
-	return muo
+	return _u
 }
 
 // SetReceivedDate sets the "received_date" field.
-func (muo *MessageUpdateOne) SetReceivedDate(t time.Time) *MessageUpdateOne {
-	muo.mutation.SetReceivedDate(t)
-	return muo
+func (_u *MessageUpdateOne) SetReceivedDate(v time.Time) *MessageUpdateOne {
+	_u.mutation.SetReceivedDate(v)
+	return _u
 }
 
 // SetNillableReceivedDate sets the "received_date" field if the given value is not nil.
-func (muo *MessageUpdateOne) SetNillableReceivedDate(t *time.Time) *MessageUpdateOne {
-	if t != nil {
-		muo.SetReceivedDate(*t)
+func (_u *MessageUpdateOne) SetNillableReceivedDate(v *time.Time) *MessageUpdateOne {
+	if v != nil {
+		_u.SetReceivedDate(*v)
 	}
-	return muo
+	return _u
 }
 
 // SetMessage sets the "message" field.
-func (muo *MessageUpdateOne) SetMessage(s []string) *MessageUpdateOne {
-	muo.mutation.SetMessage(s)
-	return muo
+func (_u *MessageUpdateOne) SetMessage(v []string) *MessageUpdateOne {
+	_u.mutation.SetMessage(v)
+	return _u
 }
 
-// AppendMessage appends s to the "message" field.
-func (muo *MessageUpdateOne) AppendMessage(s []string) *MessageUpdateOne {
-	muo.mutation.AppendMessage(s)
-	return muo
+// AppendMessage appends value to the "message" field.
+func (_u *MessageUpdateOne) AppendMessage(v []string) *MessageUpdateOne {
+	_u.mutation.AppendMessage(v)
+	return _u
 }
 
 // ClearMessage clears the value of the "message" field.
-func (muo *MessageUpdateOne) ClearMessage() *MessageUpdateOne {
-	muo.mutation.ClearMessage()
-	return muo
+func (_u *MessageUpdateOne) ClearMessage() *MessageUpdateOne {
+	_u.mutation.ClearMessage()
+	return _u
 }
 
 // Mutation returns the MessageMutation object of the builder.
-func (muo *MessageUpdateOne) Mutation() *MessageMutation {
-	return muo.mutation
+func (_u *MessageUpdateOne) Mutation() *MessageMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the MessageUpdate builder.
-func (muo *MessageUpdateOne) Where(ps ...predicate.Message) *MessageUpdateOne {
-	muo.mutation.Where(ps...)
-	return muo
+func (_u *MessageUpdateOne) Where(ps ...predicate.Message) *MessageUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (muo *MessageUpdateOne) Select(field string, fields ...string) *MessageUpdateOne {
-	muo.fields = append([]string{field}, fields...)
-	return muo
+func (_u *MessageUpdateOne) Select(field string, fields ...string) *MessageUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Message entity.
-func (muo *MessageUpdateOne) Save(ctx context.Context) (*Message, error) {
-	return withHooks(ctx, muo.sqlSave, muo.mutation, muo.hooks)
+func (_u *MessageUpdateOne) Save(ctx context.Context) (*Message, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (muo *MessageUpdateOne) SaveX(ctx context.Context) *Message {
-	node, err := muo.Save(ctx)
+func (_u *MessageUpdateOne) SaveX(ctx context.Context) *Message {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -326,26 +326,26 @@ func (muo *MessageUpdateOne) SaveX(ctx context.Context) *Message {
 }
 
 // Exec executes the query on the entity.
-func (muo *MessageUpdateOne) Exec(ctx context.Context) error {
-	_, err := muo.Save(ctx)
+func (_u *MessageUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (muo *MessageUpdateOne) ExecX(ctx context.Context) {
-	if err := muo.Exec(ctx); err != nil {
+func (_u *MessageUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (muo *MessageUpdateOne) sqlSave(ctx context.Context) (_node *Message, err error) {
+func (_u *MessageUpdateOne) sqlSave(ctx context.Context) (_node *Message, err error) {
 	_spec := sqlgraph.NewUpdateSpec(message.Table, message.Columns, sqlgraph.NewFieldSpec(message.FieldID, field.TypeInt))
-	id, ok := muo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Message.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := muo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, message.FieldID)
 		for _, f := range fields {
@@ -357,43 +357,43 @@ func (muo *MessageUpdateOne) sqlSave(ctx context.Context) (_node *Message, err e
 			}
 		}
 	}
-	if ps := muo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := muo.mutation.MessageUUID(); ok {
+	if value, ok := _u.mutation.MessageUUID(); ok {
 		_spec.SetField(message.FieldMessageUUID, field.TypeUUID, value)
 	}
-	if value, ok := muo.mutation.Sender(); ok {
+	if value, ok := _u.mutation.Sender(); ok {
 		_spec.SetField(message.FieldSender, field.TypeString, value)
 	}
-	if value, ok := muo.mutation.Receiver(); ok {
+	if value, ok := _u.mutation.Receiver(); ok {
 		_spec.SetField(message.FieldReceiver, field.TypeString, value)
 	}
-	if value, ok := muo.mutation.SendDate(); ok {
+	if value, ok := _u.mutation.SendDate(); ok {
 		_spec.SetField(message.FieldSendDate, field.TypeTime, value)
 	}
-	if value, ok := muo.mutation.ReceivedDate(); ok {
+	if value, ok := _u.mutation.ReceivedDate(); ok {
 		_spec.SetField(message.FieldReceivedDate, field.TypeTime, value)
 	}
-	if value, ok := muo.mutation.Message(); ok {
+	if value, ok := _u.mutation.Message(); ok {
 		_spec.SetField(message.FieldMessage, field.TypeJSON, value)
 	}
-	if value, ok := muo.mutation.AppendedMessage(); ok {
+	if value, ok := _u.mutation.AppendedMessage(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, message.FieldMessage, value)
 		})
 	}
-	if muo.mutation.MessageCleared() {
+	if _u.mutation.MessageCleared() {
 		_spec.ClearField(message.FieldMessage, field.TypeJSON)
 	}
-	_node = &Message{config: muo.config}
+	_node = &Message{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, muo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{message.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -401,6 +401,6 @@ func (muo *MessageUpdateOne) sqlSave(ctx context.Context) (_node *Message, err e
 		}
 		return nil, err
 	}
-	muo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

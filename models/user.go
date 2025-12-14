@@ -7,11 +7,12 @@ import (
 	_ "github.com/google/uuid"
 )
 
-type User struct {
+type UserRecord struct {
 	// adding to the ent struct for dealing with application post requests
-	UUID_Id   uuid.UUID `json:"UUID"`
-	FirstName string    `json:"firstname"`
-	LastName  string    `json:"lastname"`
-	UserName  string    `json:"username"`
-	Password  string    `json:"password"`
+	UUID_Id      uuid.UUID 
+	FirstName    string    
+	LastName     string    
+	UserName     string
+	Email		 string    
+	PasswordHash string    
 }

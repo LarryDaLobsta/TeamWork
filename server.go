@@ -7,13 +7,11 @@ import (
 	"log"
 	"net/url"
 	"os"
+	BLL "teamplayer/bll/auth"
 	DAL "teamplayer/dal"
-	"teamplayer/ent"
-
 	CHAT "teamplayer/models"
-
+	"teamplayer/ent"
 	"github.com/gofiber/contrib/websocket"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/template/html/v2"
@@ -79,42 +77,63 @@ func loginUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) err
 
 // new user handler
 func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
-	var checkError error
-	if checkError = DAL.CheckUser(ctx, c, client); checkError != nil {
-		return checkError
-	}
-	if checkError = DAL.CreateUser(ctx, c, client); checkError != nil {
-		// return the message and take the user back to create an account
-		return c.SendString(checkError.Error())
-		// return c.Redirect("/")
-	}
-	// take the user to the dashboard
-	// return c.SendString("Usser created successfully")
+	// var checkError error
+	// if checkError = DAL.CheckUser(ctx, c, client); checkError != nil {
+	// 	return checkError
+	// }
+	
+	var newUser SignUpInput
 
-	return c.Render("logindashboard", fiber.Map{
-		//"Todos": todos,
-	})
+	if err := c.BodyParser(&newUser); err != nil {
+		log.Printf("An error occured while parsing new user data: %v", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "invalid new user sign up body",
+		})
+	}
+	
+	err := BLL.userSignUp(ctx, client, newUser)
+	if err != nil {
+		switch e := err.(type) {
+	
+		case NewUserValidationError:
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"field":   e.Field,
+				"message": e.Message,
+			})
+	
+		case *ent.ConstraintError:
+			return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+				"error": "username or email already exists",
+			})
+	
+		default:
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "internal server error",
+			})
+		}
+	}
+	return c.SendStatus(fiber.StatusCreated)
 }
 
 // update user handler
-func updateUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
-	// check to see if the desired user exists
-	var checkError error
+// func updateUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
+// 	// check to see if the desired user exists
+// 	var checkError error
 
-	if checkError = DAL.CheckUser(ctx, c, client); checkError != nil {
-		return checkError
-	}
+// 	if checkError = DAL.CheckUser(ctx, c, client); checkError != nil {
+// 		return checkError
+// 	}
 
-	// if so then update
-	if checkError = DAL.UpdateUser(ctx, c, client); checkError != nil {
-		return checkError
-	}
+// 	// if so then update
+// 	if checkError = DAL.UpdateUser(ctx, c, client); checkError != nil {
+// 		return checkError
+// 	}
 
-	// good status message
-	// may need to build out custom messages tbh
-	// or return nil
-	return checkError
-}
+// 	// good status message
+// 	// may need to build out custom messages tbh
+// 	// or return nil
+// 	return checkError
+// }
 
 func putHandler(c *fiber.Ctx, db *sql.DB) error {
 	olditem, err := url.PathUnescape(c.Params("olditem"))

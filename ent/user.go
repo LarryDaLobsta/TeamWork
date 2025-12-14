@@ -4,8 +4,8 @@ package ent
 
 import (
 	"fmt"
-	"teamplayer/ent/user"
 	"strings"
+	"teamplayer/ent/user"
 	"time"
 
 	"entgo.io/ent"
@@ -26,10 +26,12 @@ type User struct {
 	FirstName string `json:"first_name,omitempty"`
 	// LastName holds the value of the "last_name" field.
 	LastName string `json:"last_name,omitempty"`
+	// Email holds the value of the "email" field.
+	Email string `json:"-"`
 	// Username holds the value of the "username" field.
-	Username string `json:"-"`
-	// Password holds the value of the "password" field.
-	Password     string `json:"-"`
+	Username string `json:"username,omitempty"`
+	// PasswordHash holds the value of the "password_hash" field.
+	PasswordHash string `json:"-"`
 	selectValues sql.SelectValues
 }
 
@@ -40,7 +42,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case user.FieldID:
 			values[i] = new(sql.NullInt64)
-		case user.FieldFirstName, user.FieldLastName, user.FieldUsername, user.FieldPassword:
+		case user.FieldFirstName, user.FieldLastName, user.FieldEmail, user.FieldUsername, user.FieldPasswordHash:
 			values[i] = new(sql.NullString)
 		case user.FieldUserCreated:
 			values[i] = new(sql.NullTime)
@@ -55,7 +57,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the User fields.
-func (u *User) assignValues(columns []string, values []any) error {
+func (_m *User) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -66,45 +68,51 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			u.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case user.FieldUserUUID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field user_uuid", values[i])
 			} else if value != nil {
-				u.UserUUID = *value
+				_m.UserUUID = *value
 			}
 		case user.FieldUserCreated:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field user_created", values[i])
 			} else if value.Valid {
-				u.UserCreated = value.Time
+				_m.UserCreated = value.Time
 			}
 		case user.FieldFirstName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field first_name", values[i])
 			} else if value.Valid {
-				u.FirstName = value.String
+				_m.FirstName = value.String
 			}
 		case user.FieldLastName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field last_name", values[i])
 			} else if value.Valid {
-				u.LastName = value.String
+				_m.LastName = value.String
+			}
+		case user.FieldEmail:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field email", values[i])
+			} else if value.Valid {
+				_m.Email = value.String
 			}
 		case user.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])
 			} else if value.Valid {
-				u.Username = value.String
+				_m.Username = value.String
 			}
-		case user.FieldPassword:
+		case user.FieldPasswordHash:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field password", values[i])
+				return fmt.Errorf("unexpected type %T for field password_hash", values[i])
 			} else if value.Valid {
-				u.Password = value.String
+				_m.PasswordHash = value.String
 			}
 		default:
-			u.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -112,48 +120,51 @@ func (u *User) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the User.
 // This includes values selected through modifiers, order, etc.
-func (u *User) Value(name string) (ent.Value, error) {
-	return u.selectValues.Get(name)
+func (_m *User) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this User.
 // Note that you need to call User.Unwrap() before calling this method if this User
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (u *User) Update() *UserUpdateOne {
-	return NewUserClient(u.config).UpdateOne(u)
+func (_m *User) Update() *UserUpdateOne {
+	return NewUserClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the User entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (u *User) Unwrap() *User {
-	_tx, ok := u.config.driver.(*txDriver)
+func (_m *User) Unwrap() *User {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: User is not a transactional entity")
 	}
-	u.config.driver = _tx.drv
-	return u
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (u *User) String() string {
+func (_m *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("user_uuid=")
-	builder.WriteString(fmt.Sprintf("%v", u.UserUUID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserUUID))
 	builder.WriteString(", ")
 	builder.WriteString("user_created=")
-	builder.WriteString(u.UserCreated.Format(time.ANSIC))
+	builder.WriteString(_m.UserCreated.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("first_name=")
-	builder.WriteString(u.FirstName)
+	builder.WriteString(_m.FirstName)
 	builder.WriteString(", ")
 	builder.WriteString("last_name=")
-	builder.WriteString(u.LastName)
+	builder.WriteString(_m.LastName)
 	builder.WriteString(", ")
-	builder.WriteString("username=<sensitive>")
+	builder.WriteString("email=<sensitive>")
 	builder.WriteString(", ")
-	builder.WriteString("password=<sensitive>")
+	builder.WriteString("username=")
+	builder.WriteString(_m.Username)
+	builder.WriteString(", ")
+	builder.WriteString("password_hash=<sensitive>")
 	builder.WriteByte(')')
 	return builder.String()
 }

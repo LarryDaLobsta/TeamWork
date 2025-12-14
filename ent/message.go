@@ -5,8 +5,8 @@ package ent
 import (
 	"encoding/json"
 	"fmt"
-	"teamplayer/ent/message"
 	"strings"
+	"teamplayer/ent/message"
 	"time"
 
 	"entgo.io/ent"
@@ -58,7 +58,7 @@ func (*Message) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Message fields.
-func (m *Message) assignValues(columns []string, values []any) error {
+func (_m *Message) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -69,47 +69,47 @@ func (m *Message) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			m.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case message.FieldMessageUUID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field message_uuid", values[i])
 			} else if value != nil {
-				m.MessageUUID = *value
+				_m.MessageUUID = *value
 			}
 		case message.FieldSender:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field sender", values[i])
 			} else if value.Valid {
-				m.Sender = value.String
+				_m.Sender = value.String
 			}
 		case message.FieldReceiver:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field receiver", values[i])
 			} else if value.Valid {
-				m.Receiver = value.String
+				_m.Receiver = value.String
 			}
 		case message.FieldSendDate:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field send_date", values[i])
 			} else if value.Valid {
-				m.SendDate = value.Time
+				_m.SendDate = value.Time
 			}
 		case message.FieldReceivedDate:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field received_date", values[i])
 			} else if value.Valid {
-				m.ReceivedDate = value.Time
+				_m.ReceivedDate = value.Time
 			}
 		case message.FieldMessage:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field message", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &m.Message); err != nil {
+				if err := json.Unmarshal(*value, &_m.Message); err != nil {
 					return fmt.Errorf("unmarshal field message: %w", err)
 				}
 			}
 		default:
-			m.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -117,50 +117,50 @@ func (m *Message) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Message.
 // This includes values selected through modifiers, order, etc.
-func (m *Message) Value(name string) (ent.Value, error) {
-	return m.selectValues.Get(name)
+func (_m *Message) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this Message.
 // Note that you need to call Message.Unwrap() before calling this method if this Message
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (m *Message) Update() *MessageUpdateOne {
-	return NewMessageClient(m.config).UpdateOne(m)
+func (_m *Message) Update() *MessageUpdateOne {
+	return NewMessageClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Message entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (m *Message) Unwrap() *Message {
-	_tx, ok := m.config.driver.(*txDriver)
+func (_m *Message) Unwrap() *Message {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Message is not a transactional entity")
 	}
-	m.config.driver = _tx.drv
-	return m
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (m *Message) String() string {
+func (_m *Message) String() string {
 	var builder strings.Builder
 	builder.WriteString("Message(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", m.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("message_uuid=")
-	builder.WriteString(fmt.Sprintf("%v", m.MessageUUID))
+	builder.WriteString(fmt.Sprintf("%v", _m.MessageUUID))
 	builder.WriteString(", ")
 	builder.WriteString("sender=")
-	builder.WriteString(m.Sender)
+	builder.WriteString(_m.Sender)
 	builder.WriteString(", ")
 	builder.WriteString("receiver=")
-	builder.WriteString(m.Receiver)
+	builder.WriteString(_m.Receiver)
 	builder.WriteString(", ")
 	builder.WriteString("send_date=")
-	builder.WriteString(m.SendDate.Format(time.ANSIC))
+	builder.WriteString(_m.SendDate.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("received_date=")
-	builder.WriteString(m.ReceivedDate.Format(time.ANSIC))
+	builder.WriteString(_m.ReceivedDate.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("message=")
-	builder.WriteString(fmt.Sprintf("%v", m.Message))
+	builder.WriteString(fmt.Sprintf("%v", _m.Message))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -10,7 +10,12 @@ import (
 )
 
 const maxFirstNameLength = 50
-const maxLastNameLength = 65
+const maxLastNameLength  = 65
+const maxEmailLength     = 254
+const minUserNameLength  = 6
+const maxUserNameLength  = 24
+const minPasswordLength  = 12
+//const maxPasswordLength  = 24
 
 func userSignUp(ctx context.Context, client *ent.Client, NewUser SignUpInput) error {
 
@@ -31,17 +36,19 @@ func userSignUp(ctx context.Context, client *ent.Client, NewUser SignUpInput) er
 	}
 
 	//validate email
-	if err := ValidateEmailEntry( *User.Email); err != nil {
-		return nil, error
-	}
-	if err := ValidateUserNameEntry( *User.UserName); err != nil {
-		return nil, error
-	}
-	if err := ValidatePasswordEntry( *User.Password); err != nil {
-		return nil, error
+	if err := ValidateUsernameEntry("username", "username", userName , minUserNameLength, maxUserNameLength); err != nil {
+		return error
 	}
 
+	//validate password
+	if err := ValidatePasswordEntry(password); err != nil {
+		return error
+	}
 
+	hash, err := HashPassword(password)
+	if err != nil {
+		return fmt.Errorf("password hash unsuccessful: %w", err)
+	}
 	// if all goes well then call the function to go to the database
 	// return from this should be if successful then return true and no error
 

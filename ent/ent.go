@@ -6,10 +6,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"teamplayer/ent/message"
-	"teamplayer/ent/user"
 	"reflect"
 	"sync"
+	"teamplayer/ent/message"
+	"teamplayer/ent/user"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -70,15 +70,15 @@ var (
 	columnCheck sql.ColumnCheck
 )
 
-// columnChecker checks if the column exists in the given table.
-func checkColumn(table, column string) error {
+// checkColumn checks if the column exists in the given table.
+func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			message.Table: message.ValidColumn,
 			user.Table:    user.ValidColumn,
 		})
 	})
-	return columnCheck(table, column)
+	return columnCheck(t, c)
 }
 
 // Asc applies the given fields in ASC order.

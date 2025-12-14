@@ -129,6 +129,7 @@ login and join look bll/auth_signup.go, dal/user_dal.go, and server.go
 
 
 December 13th
-Cleaning up validation in auth_signup.go
--- need to validate username, email, password next
--- then build testing for those 
+Cleaning up changes
+-- finish debugging so application can run
+-- then test out new additions for valdiations with test cases
+-- then move on to cleaning up the front end for a user sign up

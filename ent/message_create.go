@@ -22,85 +22,85 @@ type MessageCreate struct {
 }
 
 // SetMessageUUID sets the "message_uuid" field.
-func (mc *MessageCreate) SetMessageUUID(u uuid.UUID) *MessageCreate {
-	mc.mutation.SetMessageUUID(u)
-	return mc
+func (_c *MessageCreate) SetMessageUUID(v uuid.UUID) *MessageCreate {
+	_c.mutation.SetMessageUUID(v)
+	return _c
 }
 
 // SetNillableMessageUUID sets the "message_uuid" field if the given value is not nil.
-func (mc *MessageCreate) SetNillableMessageUUID(u *uuid.UUID) *MessageCreate {
-	if u != nil {
-		mc.SetMessageUUID(*u)
+func (_c *MessageCreate) SetNillableMessageUUID(v *uuid.UUID) *MessageCreate {
+	if v != nil {
+		_c.SetMessageUUID(*v)
 	}
-	return mc
+	return _c
 }
 
 // SetSender sets the "sender" field.
-func (mc *MessageCreate) SetSender(s string) *MessageCreate {
-	mc.mutation.SetSender(s)
-	return mc
+func (_c *MessageCreate) SetSender(v string) *MessageCreate {
+	_c.mutation.SetSender(v)
+	return _c
 }
 
 // SetReceiver sets the "receiver" field.
-func (mc *MessageCreate) SetReceiver(s string) *MessageCreate {
-	mc.mutation.SetReceiver(s)
-	return mc
+func (_c *MessageCreate) SetReceiver(v string) *MessageCreate {
+	_c.mutation.SetReceiver(v)
+	return _c
 }
 
 // SetSendDate sets the "send_date" field.
-func (mc *MessageCreate) SetSendDate(t time.Time) *MessageCreate {
-	mc.mutation.SetSendDate(t)
-	return mc
+func (_c *MessageCreate) SetSendDate(v time.Time) *MessageCreate {
+	_c.mutation.SetSendDate(v)
+	return _c
 }
 
 // SetNillableSendDate sets the "send_date" field if the given value is not nil.
-func (mc *MessageCreate) SetNillableSendDate(t *time.Time) *MessageCreate {
-	if t != nil {
-		mc.SetSendDate(*t)
+func (_c *MessageCreate) SetNillableSendDate(v *time.Time) *MessageCreate {
+	if v != nil {
+		_c.SetSendDate(*v)
 	}
-	return mc
+	return _c
 }
 
 // SetReceivedDate sets the "received_date" field.
-func (mc *MessageCreate) SetReceivedDate(t time.Time) *MessageCreate {
-	mc.mutation.SetReceivedDate(t)
-	return mc
+func (_c *MessageCreate) SetReceivedDate(v time.Time) *MessageCreate {
+	_c.mutation.SetReceivedDate(v)
+	return _c
 }
 
 // SetNillableReceivedDate sets the "received_date" field if the given value is not nil.
-func (mc *MessageCreate) SetNillableReceivedDate(t *time.Time) *MessageCreate {
-	if t != nil {
-		mc.SetReceivedDate(*t)
+func (_c *MessageCreate) SetNillableReceivedDate(v *time.Time) *MessageCreate {
+	if v != nil {
+		_c.SetReceivedDate(*v)
 	}
-	return mc
+	return _c
 }
 
 // SetMessage sets the "message" field.
-func (mc *MessageCreate) SetMessage(s []string) *MessageCreate {
-	mc.mutation.SetMessage(s)
-	return mc
+func (_c *MessageCreate) SetMessage(v []string) *MessageCreate {
+	_c.mutation.SetMessage(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (mc *MessageCreate) SetID(i int) *MessageCreate {
-	mc.mutation.SetID(i)
-	return mc
+func (_c *MessageCreate) SetID(v int) *MessageCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // Mutation returns the MessageMutation object of the builder.
-func (mc *MessageCreate) Mutation() *MessageMutation {
-	return mc.mutation
+func (_c *MessageCreate) Mutation() *MessageMutation {
+	return _c.mutation
 }
 
 // Save creates the Message in the database.
-func (mc *MessageCreate) Save(ctx context.Context) (*Message, error) {
-	mc.defaults()
-	return withHooks(ctx, mc.sqlSave, mc.mutation, mc.hooks)
+func (_c *MessageCreate) Save(ctx context.Context) (*Message, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (mc *MessageCreate) SaveX(ctx context.Context) *Message {
-	v, err := mc.Save(ctx)
+func (_c *MessageCreate) SaveX(ctx context.Context) *Message {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -108,60 +108,60 @@ func (mc *MessageCreate) SaveX(ctx context.Context) *Message {
 }
 
 // Exec executes the query.
-func (mc *MessageCreate) Exec(ctx context.Context) error {
-	_, err := mc.Save(ctx)
+func (_c *MessageCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mc *MessageCreate) ExecX(ctx context.Context) {
-	if err := mc.Exec(ctx); err != nil {
+func (_c *MessageCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (mc *MessageCreate) defaults() {
-	if _, ok := mc.mutation.MessageUUID(); !ok {
+func (_c *MessageCreate) defaults() {
+	if _, ok := _c.mutation.MessageUUID(); !ok {
 		v := message.DefaultMessageUUID()
-		mc.mutation.SetMessageUUID(v)
+		_c.mutation.SetMessageUUID(v)
 	}
-	if _, ok := mc.mutation.SendDate(); !ok {
+	if _, ok := _c.mutation.SendDate(); !ok {
 		v := message.DefaultSendDate()
-		mc.mutation.SetSendDate(v)
+		_c.mutation.SetSendDate(v)
 	}
-	if _, ok := mc.mutation.ReceivedDate(); !ok {
+	if _, ok := _c.mutation.ReceivedDate(); !ok {
 		v := message.DefaultReceivedDate()
-		mc.mutation.SetReceivedDate(v)
+		_c.mutation.SetReceivedDate(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (mc *MessageCreate) check() error {
-	if _, ok := mc.mutation.MessageUUID(); !ok {
+func (_c *MessageCreate) check() error {
+	if _, ok := _c.mutation.MessageUUID(); !ok {
 		return &ValidationError{Name: "message_uuid", err: errors.New(`ent: missing required field "Message.message_uuid"`)}
 	}
-	if _, ok := mc.mutation.Sender(); !ok {
+	if _, ok := _c.mutation.Sender(); !ok {
 		return &ValidationError{Name: "sender", err: errors.New(`ent: missing required field "Message.sender"`)}
 	}
-	if _, ok := mc.mutation.Receiver(); !ok {
+	if _, ok := _c.mutation.Receiver(); !ok {
 		return &ValidationError{Name: "receiver", err: errors.New(`ent: missing required field "Message.receiver"`)}
 	}
-	if _, ok := mc.mutation.SendDate(); !ok {
+	if _, ok := _c.mutation.SendDate(); !ok {
 		return &ValidationError{Name: "send_date", err: errors.New(`ent: missing required field "Message.send_date"`)}
 	}
-	if _, ok := mc.mutation.ReceivedDate(); !ok {
+	if _, ok := _c.mutation.ReceivedDate(); !ok {
 		return &ValidationError{Name: "received_date", err: errors.New(`ent: missing required field "Message.received_date"`)}
 	}
 	return nil
 }
 
-func (mc *MessageCreate) sqlSave(ctx context.Context) (*Message, error) {
-	if err := mc.check(); err != nil {
+func (_c *MessageCreate) sqlSave(ctx context.Context) (*Message, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := mc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, mc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -171,41 +171,41 @@ func (mc *MessageCreate) sqlSave(ctx context.Context) (*Message, error) {
 		id := _spec.ID.Value.(int64)
 		_node.ID = int(id)
 	}
-	mc.mutation.id = &_node.ID
-	mc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (mc *MessageCreate) createSpec() (*Message, *sqlgraph.CreateSpec) {
+func (_c *MessageCreate) createSpec() (*Message, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Message{config: mc.config}
+		_node = &Message{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(message.Table, sqlgraph.NewFieldSpec(message.FieldID, field.TypeInt))
 	)
-	if id, ok := mc.mutation.ID(); ok {
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := mc.mutation.MessageUUID(); ok {
+	if value, ok := _c.mutation.MessageUUID(); ok {
 		_spec.SetField(message.FieldMessageUUID, field.TypeUUID, value)
 		_node.MessageUUID = value
 	}
-	if value, ok := mc.mutation.Sender(); ok {
+	if value, ok := _c.mutation.Sender(); ok {
 		_spec.SetField(message.FieldSender, field.TypeString, value)
 		_node.Sender = value
 	}
-	if value, ok := mc.mutation.Receiver(); ok {
+	if value, ok := _c.mutation.Receiver(); ok {
 		_spec.SetField(message.FieldReceiver, field.TypeString, value)
 		_node.Receiver = value
 	}
-	if value, ok := mc.mutation.SendDate(); ok {
+	if value, ok := _c.mutation.SendDate(); ok {
 		_spec.SetField(message.FieldSendDate, field.TypeTime, value)
 		_node.SendDate = value
 	}
-	if value, ok := mc.mutation.ReceivedDate(); ok {
+	if value, ok := _c.mutation.ReceivedDate(); ok {
 		_spec.SetField(message.FieldReceivedDate, field.TypeTime, value)
 		_node.ReceivedDate = value
 	}
-	if value, ok := mc.mutation.Message(); ok {
+	if value, ok := _c.mutation.Message(); ok {
 		_spec.SetField(message.FieldMessage, field.TypeJSON, value)
 		_node.Message = value
 	}
@@ -220,16 +220,16 @@ type MessageCreateBulk struct {
 }
 
 // Save creates the Message entities in the database.
-func (mcb *MessageCreateBulk) Save(ctx context.Context) ([]*Message, error) {
-	if mcb.err != nil {
-		return nil, mcb.err
+func (_c *MessageCreateBulk) Save(ctx context.Context) ([]*Message, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(mcb.builders))
-	nodes := make([]*Message, len(mcb.builders))
-	mutators := make([]Mutator, len(mcb.builders))
-	for i := range mcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Message, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := mcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*MessageMutation)
@@ -243,11 +243,11 @@ func (mcb *MessageCreateBulk) Save(ctx context.Context) ([]*Message, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, mcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, mcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -271,7 +271,7 @@ func (mcb *MessageCreateBulk) Save(ctx context.Context) ([]*Message, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, mcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -279,8 +279,8 @@ func (mcb *MessageCreateBulk) Save(ctx context.Context) ([]*Message, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (mcb *MessageCreateBulk) SaveX(ctx context.Context) []*Message {
-	v, err := mcb.Save(ctx)
+func (_c *MessageCreateBulk) SaveX(ctx context.Context) []*Message {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -288,14 +288,14 @@ func (mcb *MessageCreateBulk) SaveX(ctx context.Context) []*Message {
 }
 
 // Exec executes the query.
-func (mcb *MessageCreateBulk) Exec(ctx context.Context) error {
-	_, err := mcb.Save(ctx)
+func (_c *MessageCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (mcb *MessageCreateBulk) ExecX(ctx context.Context) {
-	if err := mcb.Exec(ctx); err != nil {
+func (_c *MessageCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
