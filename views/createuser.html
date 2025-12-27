@@ -2,19 +2,181 @@
 
 <script src="https://unpkg.com/htmx.org@2.0.0/dist/htmx.js" integrity="sha384-Xh+GLLi0SMFPwtHQjT72aPG19QvKB8grnyRbYBNIdHWc2NkCrz65jlU7YrzO6qRp" crossorigin="anonymous"></script>
 
+<!DOCTYPE >
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Team Work</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
 
-<form>
-	<label> First Name : </label><br>
-	<input type="text" name="firs_tname" id="first_name" ><br>
-	<label> Last Name : </label><br>
-	<input type="text" name="last_name" id="last_name" ><br>
-	<label> UserName : </label><br>
-	<input type="text" name="user_name" id="last_name" ><br>
-	<label> Email : </label><br>
-	<input type="text" name="email" id="email" ><br>
-	<label> Password : </label><br>
-	<input type="text" name="password" id="password" ><br>
-	<button type="submit" value="Submit" hx-post="/signup/newuser" hx-include="#firstname #lastname #username #password">Submit</button>
+    <!--htmx-->
+    <script
+      src="https://unpkg.com/htmx.org@2.0.1"
+      integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
+      <a class="navbar-brand" href="#">TeamWork</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-	
-</form>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <!--<li class="nav-item active">-->
+          <!--  <a class="nav-link" href="#"-->
+          <!--    >Home <span class="sr-only">(current)</span></a-->
+          <!--  >-->
+          <!--</li>-->
+          <li class="nav-item">
+            <a class="nav-link" href="#">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Rooms</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Assignments</a>
+          </li>
+        </ul>
+
+        <!--search bar dynamic open and close-->
+        <div class="collapse navbar-collapse justify-content-center">
+          <span
+            class="input-group-text border-0 navbar-nav me-auto mb-2 mb-lg-0"
+            id="search-addon"
+          >
+            <i class="fas fa-search">searchicon</i>
+          </span>
+
+          <form class="input-group d-none">
+            <input
+              type="search"
+              class="form-control rounded"
+              placeholder="Search"
+              aria-label="Search"
+              aria-describedby="search-addon"
+            />
+          </form>
+        </div>
+
+        <div class="d-flex align-items-center">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Notifications</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#">User Info</a>
+          </li>
+        </div>
+      </div>
+    </nav>
+
+	<!-- the login form for new users  -->
+	<div class="container mt-5">
+		<div class="row justify-content-center">
+		  <div class="col-12 col-sm-10 col-md-6 col-lg-4">
+			<div class="card">
+			  <div class="card-body">
+				<form hx-post="/signup/newuser">
+					<div class="form-group">
+						<label for="first_name">First Name</label>
+						<input
+						  type="text"
+						  class="form-control is-invalid"
+						  id="firstName"
+						  name="first_name"
+						  placeholder="Enter last name"
+						>
+						<div class="invalid-feedback">
+						  First name is required.
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="lastName">Last Name</label>
+						<input
+						  type="text"
+						  class="form-control is-invalid"
+						  id="lastName"
+						  name="last_name"
+						  placeholder="Enter last name"
+						>
+						<div class="invalid-feedback">
+						  Last name is required.
+						</div>
+					</div>
+					<div class="form-group">
+					<label for="exampleInputEmail1">Email address</label>
+					<input type="email" class="form-control is-invalid" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+					<div class="invalid-feedback">
+						Email is required.
+					</div>
+					<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+					</div>
+					<div class="form-group">
+						<label for="firstName">User name</label>
+						<input
+						  type="text"
+						  class="form-control is-invalid"
+						  id="userName"
+						  name="user_name"
+						  placeholder="Create a username"
+						>
+						<div class="invalid-feedback">
+						  Username is required.
+						</div>
+					</div>
+					<div class="form-group">
+					  <label for="exampleInputPassword1">Password</label>
+					  <input type="password" class="form-control is-invalid" id="password" name="password" placeholder="Create a password">
+					  <div class="invalid-feedback">
+						Password is required.
+					  </div>
+					</div>
+					<div class="form-check">
+					  <input type="checkbox" class="form-check-input" id="exampleCheck1">
+					  <label class="form-check-label" for="exampleCheck1">Check me out</label>
+					</div>
+					<button type="submit" class="btn btn-primary" value="Submit">Create Account</button>
+				</form>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+  </body>
+</html>

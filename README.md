@@ -140,3 +140,9 @@ Cleaned up bll issues everything runs
 -- need to clean up createuser.html so that the form can look correct with headers, footers, and etc
 -- clean up handler logic. You will see on line 255 and 256 where handler logic needs to be added.
 -- Finish out the rest of the crud for users and go from there
+
+
+Dec 28th 2025
+Cleaning up newUserPostHandler in the server file
+-- form looks good just need to clean up the backend to handle the request
+-- line 44 is where you should start and link everything up with the handler rappers and what the handler should pass to the bll.

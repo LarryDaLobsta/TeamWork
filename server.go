@@ -40,6 +40,20 @@ func indexHandler(c *fiber.Ctx) error {
 	})
 }
 
+
+func newUserPostHandler(c *fiber.Ctx, dbConn.Ent, ctx) error {
+
+	// Get the request for the form data
+
+	//either format object to go to bll or bll will handle it
+	if SignUpVal := UserSignUp(ctx, dbConn.Ent, NewUserObj); err != nil {
+		return SignUpVal
+	}
+
+	// redirect 
+
+
+}
 // add the login handler here
 
 // need to validate, then authenticate
@@ -250,6 +264,11 @@ func main() {
 		return c.Render("chatroom", fiber.Map{})
 	})
 
+	app.Get("/signup/newuser", func(c *fiber.Ctx) error {
+		log.Println("Creating a new user here")
+		return c.Render("createuser", fiber.Map{})
+	})
+
 	//New user sign up section 
 	//app.Get signup
 	//re-route so user logs in with new credentials
@@ -258,7 +277,7 @@ func main() {
 	// This will deal with the post methods adding new todos, new users, new chatrooms, etc
 	app.Post("/", func(cfib *fiber.Ctx) error {
 		// adding user to the system
-		return newUserHandler(cfib, dbConn.Ent, ctx)
+		return newUserPostHandler(cfib, dbConn.Ent, ctx)
 		// return postHandler(c, db)
 	})
 
