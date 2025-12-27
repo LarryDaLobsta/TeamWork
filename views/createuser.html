@@ -5,11 +5,13 @@
 
 <form>
 	<label> First Name : </label><br>
-	<input type="text" name="firstname" id="firstname" ><br>
+	<input type="text" name="firs_tname" id="first_name" ><br>
 	<label> Last Name : </label><br>
-	<input type="text" name="lastname" id="lastname" ><br>
+	<input type="text" name="last_name" id="last_name" ><br>
 	<label> UserName : </label><br>
-	<input type="text" name="username" id="username" ><br>
+	<input type="text" name="user_name" id="last_name" ><br>
+	<label> Email : </label><br>
+	<input type="text" name="email" id="email" ><br>
 	<label> Password : </label><br>
 	<input type="text" name="password" id="password" ><br>
 	<button type="submit" value="Submit" hx-post="/signup/newuser" hx-include="#firstname #lastname #username #password">Submit</button>

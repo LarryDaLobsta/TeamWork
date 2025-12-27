@@ -9,7 +9,7 @@ import (
 	"os"
 	BLL "teamplayer/bll/auth"
 	DAL "teamplayer/dal"
-	CHAT "teamplayer/models"
+	models "teamplayer/models"
 	"teamplayer/ent"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
@@ -35,7 +35,7 @@ func indexHandler(c *fiber.Ctx) error {
 	// 	todos = append(todos, res)
 	// }
 
-	return c.Render("logindashboard", fiber.Map{
+	return c.Render("createuser", fiber.Map{
 		//"Todos": todos,
 	})
 }
@@ -82,7 +82,7 @@ func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error
 	// 	return checkError
 	// }
 	
-	var newUser SignUpInput
+	var newUser models.UserSignUp
 
 	if err := c.BodyParser(&newUser); err != nil {
 		log.Printf("An error occured while parsing new user data: %v", err)
@@ -91,14 +91,14 @@ func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error
 		})
 	}
 	
-	err := BLL.userSignUp(ctx, client, newUser)
+	err := BLL.UserSignUp(ctx, client, newUser)
 	if err != nil {
 		switch e := err.(type) {
 	
-		case NewUserValidationError:
+		case models.NewUserValidationError:
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"field":   e.Field,
-				"message": e.Message,
+				"field":   e.SignUpField,
+				"message": e.ValidationMessage,
 			})
 	
 		case *ent.ConstraintError:
@@ -209,17 +209,17 @@ func main() {
 		return c.SendString("ok")
 	})
 
-	chatHub := CHAT.NewChatRoomServer()
+	chatHub := models.NewChatRoomServer()
 
 	// Create the default "lobby" room can convert to a function later
-	chatHub.Rooms["lobby"] = &CHAT.ChatRoom{
+	chatHub.Rooms["lobby"] = &models.ChatRoom{
 		ID:      "lobby",
 		Name:    "Lobby",
 		Project: "default",
-		Clients: make(map[string]*CHAT.Client),
+		Clients: make(map[string]*models.Client),
 	}
 	
-	chatHubHandler := CHAT.NewChatRoomHandler(chatHub)
+	chatHubHandler := models.NewChatRoomHandler(chatHub)
 
 	go chatHub.StartServer()
 	app.Post("/ws/createRoom", func(c *fiber.Ctx) error {
@@ -249,6 +249,11 @@ func main() {
 		log.Println("Here we goooo")
 		return c.Render("chatroom", fiber.Map{})
 	})
+
+	//New user sign up section 
+	//app.Get signup
+	//re-route so user logs in with new credentials
+	// then give user lobby/logindashboard room
 
 	// This will deal with the post methods adding new todos, new users, new chatrooms, etc
 	app.Post("/", func(cfib *fiber.Ctx) error {

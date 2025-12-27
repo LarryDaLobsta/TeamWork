@@ -1,11 +1,10 @@
 package bll
 
 import (
-	"encoding/json"
+	"context"
+	"teamplayer/ent"
+	models "teamplayer/models"
 	"fmt"
-	"html"
-	"log"
-	"github.com/gofiber/contrib/websocket"
 	dal "teamplayer/dal"
 )
 
@@ -17,7 +16,7 @@ const maxUserNameLength  = 24
 const minPasswordLength  = 12
 //const maxPasswordLength  = 24
 
-func userSignUp(ctx context.Context, client *ent.Client, NewUser SignUpInput) error {
+func UserSignUp(ctx context.Context, client *ent.Client, NewUser models.UserSignUp) error {
 
 	firstName := NewUser.FirstName
 	lastName  := NewUser.LastName	
@@ -36,13 +35,18 @@ func userSignUp(ctx context.Context, client *ent.Client, NewUser SignUpInput) er
 	}
 
 	//validate email
-	if err := ValidateUsernameEntry("username", "username", userName , minUserNameLength, maxUserNameLength); err != nil {
-		return error
+	if err := ValidateEmailEntry("email", "email", email , maxEmailLength); err != nil {
+		return err
+	}
+
+	//valide username
+	if err := ValidateUsernameEntry("user_name", "user name", userName, minUserNameLength, maxUserNameLength); err != nil {
+		return err
 	}
 
 	//validate password
-	if err := ValidatePasswordEntry(password); err != nil {
-		return error
+	if err := ValidatePasswordEntry("password", "password", password, minPasswordLength); err != nil {
+		return err
 	}
 
 	hash, err := HashPassword(password)
@@ -52,6 +56,21 @@ func userSignUp(ctx context.Context, client *ent.Client, NewUser SignUpInput) er
 	// if all goes well then call the function to go to the database
 	// return from this should be if successful then return true and no error
 
-	dal.CreateUser()
+	//dal object to protect database 
+
+	SuccNewUser := models.UserRecord{
+		FirstName:		firstName,
+		LastName:		lastName,
+		UserName:		userName,
+		Email:			email,
+		PasswordHash:	hash,
+	}
+
+	createdUserStatus := dal.CreateUser(SuccNewUser, client, ctx)
+	if createdUserStatus != nil {
+		return fmt.Errorf("User Creation unsuccessful: %w", createdUserStatus)
+	}
+
+	return nil
 
 }

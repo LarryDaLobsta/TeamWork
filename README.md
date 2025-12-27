@@ -133,3 +133,10 @@ Cleaning up changes
 -- finish debugging so application can run
 -- then test out new additions for valdiations with test cases
 -- then move on to cleaning up the front end for a user sign up
+
+
+Dec 27th 2025
+Cleaned up bll issues everything runs 
+-- need to clean up createuser.html so that the form can look correct with headers, footers, and etc
+-- clean up handler logic. You will see on line 255 and 256 where handler logic needs to be added.
+-- Finish out the rest of the crud for users and go from there
