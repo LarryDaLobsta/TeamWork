@@ -2,18 +2,18 @@ package models
 
 
 type UserSignUp struct {
-    FirstName string	`json:"first_name"`
-    LastName  string	`json:"last_name"`
-    UserName  string	`json:"username"`
-    Email     string	`json:"email"`
-    Password  string	`json:"password"`
+    FirstName string	`form:"first_name"`
+    LastName  string	`form:"last_name"`
+    UserName  string	`form:"username"`
+    Email     string	`form:"email"`
+    Password  string	`form:"password"`
 }
 
 
 type UserProfile struct {
-	id		  int		`json:"id"`
-    FirstName string	`json:"first_name"`
-    LastName  string	`json:"last_name"`
-    UserName  string	`json:"username"`	
-    Email     string	`json:"email"`
+	id		  int		`form:"id"`
+    FirstName string	`form:"first_name"`
+    LastName  string	`form:"last_name"`
+    UserName  string	`form:"username"`	
+    Email     string	`form:"email"`
 }

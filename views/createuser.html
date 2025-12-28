@@ -112,7 +112,7 @@
 		  <div class="col-12 col-sm-10 col-md-6 col-lg-4">
 			<div class="card">
 			  <div class="card-body">
-				<form hx-post="/signup/newuser">
+				<form hx-post="/signup" hx-swap="outerHTML" method="POST">
 					<div class="form-group">
 						<label for="first_name">First Name</label>
 						<input
@@ -127,7 +127,7 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="lastName">Last Name</label>
+						<label for="last_name">Last Name</label>
 						<input
 						  type="text"
 						  class="form-control is-invalid"
@@ -140,20 +140,20 @@
 						</div>
 					</div>
 					<div class="form-group">
-					<label for="exampleInputEmail1">Email address</label>
-					<input type="email" class="form-control is-invalid" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+					<label for="email">Email address</label>
+					<input type="email" class="form-control is-invalid" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
 					<div class="invalid-feedback">
 						Email is required.
 					</div>
 					<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
 					</div>
 					<div class="form-group">
-						<label for="firstName">User name</label>
+						<label for="userName">User name</label>
 						<input
 						  type="text"
 						  class="form-control is-invalid"
 						  id="userName"
-						  name="user_name"
+						  name="username"
 						  placeholder="Create a username"
 						>
 						<div class="invalid-feedback">

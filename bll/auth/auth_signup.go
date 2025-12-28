@@ -5,6 +5,7 @@ import (
 	"teamplayer/ent"
 	models "teamplayer/models"
 	"fmt"
+	"log"
 	dal "teamplayer/dal"
 )
 
@@ -26,6 +27,7 @@ func UserSignUp(ctx context.Context, client *ent.Client, NewUser models.UserSign
 
 	// validate first name
 	if err := ValidateNameEntry("first_name", "first name", firstName, maxFirstNameLength); err != nil {
+		log.Println("First name issue ")
 		return err
 	}
 

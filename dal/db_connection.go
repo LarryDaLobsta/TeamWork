@@ -69,6 +69,7 @@ func NewDbConnection(ctx context.Context) (*DBConnection, error) {
     }
 
 	log.Println("DB connections established")
+	log.Println("Connected to DB:", postgresConnStr)
 
 	return &DBConnection{
 		SQL: sqlDB,

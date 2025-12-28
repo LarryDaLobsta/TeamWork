@@ -3,9 +3,9 @@ package models
 
 type NewUserValidationError struct {
 	SignUpField			string	`json:"field"`
-	ValidationMessage	string `json:"string"`
+	ValidationMessage	string `json:"validation_message"`
 }
 
-func ( response NewUserValidationError) Error() string {
+func ( response *NewUserValidationError) Error() string {
 	return response.ValidationMessage
 }

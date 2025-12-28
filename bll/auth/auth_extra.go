@@ -19,21 +19,21 @@ import (
 
 func ValidateNameEntry(SignUpField ,label, name string, maxNameLength int) error {
 	if EmptyString(name) {
-		return models.NewUserValidationError{
+		return &models.NewUserValidationError{
 			SignUpField:   SignUpField,
 			ValidationMessage: label + " is required. No empty entry.",
 		} 
 	}
 
 	if CheckMaxLength(maxNameLength, name) {
-		return models.NewUserValidationError{
+		return &models.NewUserValidationError{
 			SignUpField:   SignUpField,
 			ValidationMessage: label + " must be " + strconv.Itoa(maxNameLength) + " characters or fewer.",
 		} 
 	}
 
 	if SpecialCharacter(name) {
-		return models.NewUserValidationError{
+		return &models.NewUserValidationError{
 			SignUpField:   SignUpField,
 			ValidationMessage: label + " contains symbols, digits, and control characters.",
 		} 
@@ -45,21 +45,21 @@ func ValidateNameEntry(SignUpField ,label, name string, maxNameLength int) error
 func ValidateEmailEntry(SignUpField ,label, emailAddress string, maxEmailLength int) error {
 	email := strings.ToLower(strings.TrimSpace(emailAddress))
 	if EmptyString(email) {
-		return models.NewUserValidationError{
+		return &models.NewUserValidationError{
 			SignUpField:   SignUpField,
 			ValidationMessage: label + " is required. No empty entry.",
 		} 
 	}
 
 	if CheckMaxLength(maxEmailLength, email) {
-		return models.NewUserValidationError{
+		return &models.NewUserValidationError{
 			SignUpField:   SignUpField,
 			ValidationMessage: label + " must be " + strconv.Itoa(maxEmailLength) + " characters or fewer.",
 		} 
 	}
 
 	if IsInvalidEmail(email) {
-		return models.NewUserValidationError{
+		return &models.NewUserValidationError{
 			SignUpField:   SignUpField,
 			ValidationMessage: label + " is not a valid email address.",
 		} 
@@ -72,21 +72,21 @@ func ValidateUsernameEntry(SignUpField, label, userName string, minUserNameLengt
 	username := strings.ToLower(strings.TrimSpace(userName))	
 
 	if EmptyString(username) {
-		return models.NewUserValidationError{
+		return &models.NewUserValidationError{
 			SignUpField:   SignUpField,
 			ValidationMessage: label + " is required. No empty entry.",
 		} 
 	}
 
 	if CheckUserNameLength(minUserNameLength , maxUserNameLength, username) {
-		return models.NewUserValidationError{
+		return &models.NewUserValidationError{
 			SignUpField:   SignUpField,
 			ValidationMessage: label + " must be " + strconv.Itoa(minUserNameLength) + " to "+ strconv.Itoa(maxUserNameLength) + " characters.",
 		} 
 	}
 
 	if IsInvalidUserNameCharacters(username) {
-		return models.NewUserValidationError{
+		return &models.NewUserValidationError{
 			SignUpField:   SignUpField,
 			ValidationMessage: label + " is not a valid username.",
 		} 
@@ -97,21 +97,21 @@ func ValidateUsernameEntry(SignUpField, label, userName string, minUserNameLengt
 
 func ValidatePasswordEntry(SignUpField, label, password string, minPasswordLength int) error {
 	if EmptyString(password) {
-		return models.NewUserValidationError{
+		return &models.NewUserValidationError{
 			SignUpField:   SignUpField,
 			ValidationMessage: label + " is required. No empty entry.",
 		} 
 	}
 
 	if CheckMinLength(minPasswordLength, password) {
-		return models.NewUserValidationError{
+		return &models.NewUserValidationError{
 			SignUpField:   SignUpField,
 			ValidationMessage: label + " must be at least " + strconv.Itoa(minPasswordLength) + " characters.",
 		} 
 	}
 
 	if IsInvalidPasswordCharacters(password) {
-		return models.NewUserValidationError{
+		return &models.NewUserValidationError{
 			SignUpField:   SignUpField,
 			ValidationMessage: label + " contains invalid control characters.",
 		} 

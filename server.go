@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"errors"
 	BLL "teamplayer/bll/auth"
 	DAL "teamplayer/dal"
 	models "teamplayer/models"
@@ -40,17 +41,66 @@ func indexHandler(c *fiber.Ctx) error {
 	})
 }
 
+// gets the new user form so a user get created.
+func newUserGetHandler(c *fiber.Ctx) error {
 
-func newUserPostHandler(c *fiber.Ctx, dbConn.Ent, ctx) error {
+	return c.Render("createuser", fiber.Map{})
+}
+
+
+func newUserPostHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
+
+	log.Println("Post method to create a new user")
 
 	// Get the request for the form data
+	var NewUserObj models.UserSignUp
+
+	if err := c.BodyParser(&NewUserObj); err != nil {
+		// handle bad request data maybe a code and 
+		// information to tell the user to retry
+	}
 
 	//either format object to go to bll or bll will handle it
-	if SignUpVal := UserSignUp(ctx, dbConn.Ent, NewUserObj); err != nil {
-		return SignUpVal
+	if SignUpErr := BLL.UserSignUp(ctx, client , NewUserObj); SignUpErr != nil {
+
+		var valErrUserInfo *models.NewUserValidationError
+
+		if errors.As(SignUpErr, &valErrUserInfo) {
+			log.Println("User put in bad data")
+			// we know error is for bad user infobad information return error and the webpage
+			return c.Render("createuser", fiber.Map{
+				"values": fiber.Map{
+				"first_name": NewUserObj.FirstName,
+				"last_name":  NewUserObj.LastName,
+				"email":      NewUserObj.Email,
+				"user_name":  NewUserObj.UserName,
+				},
+				"errors": fiber.Map{
+				valErrUserInfo.SignUpField : valErrUserInfo.ValidationMessage,
+				},
+				"hasErrors": true,
+			})
+		}
+
+
+		// return error minimal information, db related
+		log.Printf("signup failed: %v", SignUpErr)
+
+		return c.Status(fiber.StatusInternalServerError).Render("createuser", fiber.Map{
+			"values": fiber.Map{
+				"first_name": NewUserObj.FirstName,
+				"last_name":  NewUserObj.LastName,
+				"email":      NewUserObj.Email,
+				"user_name":  NewUserObj.UserName,
+			},
+			"globalError": "Something went wrong while creating your account. Please try again.",
+		})
+
+		
 	}
 
 	// redirect 
+	return c.Redirect("/logindashboard")
 
 
 }
@@ -90,44 +140,44 @@ func loginUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) err
 }
 
 // new user handler
-func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
-	// var checkError error
-	// if checkError = DAL.CheckUser(ctx, c, client); checkError != nil {
-	// 	return checkError
-	// }
+// func newUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
+// 	// var checkError error
+// 	// if checkError = DAL.CheckUser(ctx, c, client); checkError != nil {
+// 	// 	return checkError
+// 	// }
 	
-	var newUser models.UserSignUp
+// 	var newUser models.UserSignUp
 
-	if err := c.BodyParser(&newUser); err != nil {
-		log.Printf("An error occured while parsing new user data: %v", err)
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "invalid new user sign up body",
-		})
-	}
+// 	if err := c.BodyParser(&newUser); err != nil {
+// 		log.Printf("An error occured while parsing new user data: %v", err)
+// 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+// 			"error": "invalid new user sign up body",
+// 		})
+// 	}
 	
-	err := BLL.UserSignUp(ctx, client, newUser)
-	if err != nil {
-		switch e := err.(type) {
+// 	err := BLL.UserSignUp(ctx, client, newUser)
+// 	if err != nil {
+// 		switch e := err.(type) {
 	
-		case models.NewUserValidationError:
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"field":   e.SignUpField,
-				"message": e.ValidationMessage,
-			})
+// 		case models.NewUserValidationError:
+// 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+// 				"field":   e.SignUpField,
+// 				"message": e.ValidationMessage,
+// 			})
 	
-		case *ent.ConstraintError:
-			return c.Status(fiber.StatusConflict).JSON(fiber.Map{
-				"error": "username or email already exists",
-			})
+// 		case *ent.ConstraintError:
+// 			return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+// 				"error": "username or email already exists",
+// 			})
 	
-		default:
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": "internal server error",
-			})
-		}
-	}
-	return c.SendStatus(fiber.StatusCreated)
-}
+// 		default:
+// 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+// 				"error": "internal server error",
+// 			})
+// 		}
+// 	}
+// 	return c.SendStatus(fiber.StatusCreated)
+// }
 
 // update user handler
 // func updateUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
@@ -264,9 +314,15 @@ func main() {
 		return c.Render("chatroom", fiber.Map{})
 	})
 
-	app.Get("/signup/newuser", func(c *fiber.Ctx) error {
+	app.Get("/signup", func(c *fiber.Ctx) error {
 		log.Println("Creating a new user here")
-		return c.Render("createuser", fiber.Map{})
+		return newUserGetHandler(c)
+	})
+
+
+	app.Get("/logindashboard", func(c *fiber.Ctx) error {
+		log.Println("Successfully created user. On user home page")
+		return c.Render("logindashboard", fiber.Map{})
 	})
 
 	//New user sign up section 
@@ -275,7 +331,7 @@ func main() {
 	// then give user lobby/logindashboard room
 
 	// This will deal with the post methods adding new todos, new users, new chatrooms, etc
-	app.Post("/", func(cfib *fiber.Ctx) error {
+	app.Post("/signup", func(cfib *fiber.Ctx) error {
 		// adding user to the system
 		return newUserPostHandler(cfib, dbConn.Ent, ctx)
 		// return postHandler(c, db)

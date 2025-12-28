@@ -146,3 +146,11 @@ Dec 28th 2025
 Cleaning up newUserPostHandler in the server file
 -- form looks good just need to clean up the backend to handle the request
 -- line 44 is where you should start and link everything up with the handler rappers and what the handler should pass to the bll.
+
+Dec 29th 2025
+Server runs and on successful addition user can be created, just gotcha cases to clean up and front end to fix.
+ToDo:
+	•	Extract signup form into a reusable partial template (HTMX-friendly)
+	•	Extract navigation bar into a shared layout partial
+	•	Handle database unique-constraint errors (email / username) and map them to user-facing validation messages
+	•	Improve validation flow to return form partials on error (no full-page re-render with HTMX)
