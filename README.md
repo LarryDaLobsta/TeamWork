@@ -1,105 +1,118 @@
 # TeamWork
+---
 
+A Go-based backend application designed to reduce friction in everyday workflows by making system behavior explicit, predictable, and easy to extend—so users can focus on their work instead of the system itself.
 
-This is the team work application each directory has a detailed to do that should help understand what this program wiil do,
-this is just a weekend project type of deal so it will take some time to build out.
+Rather than optimizing for rapid feature delivery at the expense of stability, this project prioritizes a foundation that supports *flow*. The goal is to minimize the panic, context-switching, and cognitive overhead that often emerge when systems behave unpredictably, surface errors late, or require rushed fixes under deadline pressure.
 
-Main next project/goal
-- connect front end socket with the backend
-- work on developing chat rooms 
+At its core, the application is structured around a simple idea:
 
+**Well-designed systems should get out of the way.**
 
-June 21st update
-- Decided to use Ent as ORM instead of GORM good choice
-- Ran first migration with autoupdate mirgration
-- Todos
--   Create Functions for CRUD capabilities on Users and messages
--   Created edges for users and messages
--   Create todos for users and messages
--   Create edges for todos
+This means:
+- Clear boundaries between concerns, so changes are localized and understandable
+- Early, intentional error handling that prevents surprises downstream
+- Data models that reflect real-world constraints instead of idealized assumptions
+- Incremental development that allows progress without forcing rewrites or urgent refactors
 
-June 30th update
-- Partially dealing with the ability to create a user
-- Need to add Validation sequence in the handler method for creating a user
-- clean up UI with HTMX for the front end create user form
-- Deal with validation if a user is not unique and process that error from server to UI
+By emphasizing clarity over speed and stability over novelty, the system aims to support both end users and developers—reducing stress, enabling confidence, and allowing work to move forward calmly even under real-world time constraints.
 
-July 6th
-- Cleaned up the DAL capability for creating a user and validating whether a username and password already exists
-- Need to connect the user finder and usercreation function
-- Add animation for dealing with authentication errors
-- Need to give ability to user to create chatrooms after registering
+The project serves both as a functional backend and as a proving ground for patterns that prioritize long-term maintainability, human-centered design, and reduced cognitive load.
 
+---
 
+## Current Status
 
+🚧 **In active development**
 
-July 13th
-- want to think of things for the ui considering I can add and update users apprpopriately
-- UI: 
-    login: add or update
-    login dashboard:
-        - projects
-            - chat rooms
-        - role of the logged in the user 
-            - roles of all users in a project
-        - calendars for dates for the projects, timelines and overall todos for assigned users
-    - This will be a good start for now....
-- finish CRUD abilities
-- create a status function for handling messages to send back to the user when CRUD capabilities are being used.
+The project is being built incrementally with an emphasis on correctness, clarity, and maintainability rather than speed.
 
+---
 
+## Features (Implemented)
 
-July 19th 
-- Cleaned up the create new user and update a user functionality
-- need to test that out, then build delete and create query function to load a user
-- last thing create dashobard for user when they log in
+- User signup flow with server-side validation
+- Database-backed persistence using PostgreSQL
+- Unique constraint handling and graceful error feedback
+- Basic navigation and templating
+- Structured error handling patterns in Go
 
+---
 
+## In Progress
 
-July 21st 
-- committing to chat room development
-- Things to do 
-    - need to clean up how the hub will be implemented in the server.go file
-    - clean up the handling of a new web socket connection when someone is joining a room
-    - then break out the chatroom.go file so that there is some decoupling with the different models and associated methods
-    - add database implementation to save chatrooms, chatmessages, log chat messages, etc
+- **Authentication flows**  
+  User onboarding through account creation or sign-in, designed to be simple, explicit, and interruption-free so users can move directly into their work.
 
-July 21st night edition
-- clean up the rest of the StartServer file in the chatroom module
-- then clean up the implementation in the main server.go file
+- **Task-oriented data models**  
+  Core models that support both small, atomic tasks (todos) and larger scoped work such as bugs or ongoing initiatives, allowing the system to scale naturally with user needs.
 
+- **Internal dashboards**  
+  Centralized views that surface all current assignments—ranging from simple todos to larger contexts like bug-related chatrooms—so users can quickly understand what requires attention without context switching.
 
+- **Frontend improvements**  
+  Progressive enhancement of the UI using a modern framework (e.g. Next.js) to provide clearer validation feedback, smoother transitions, and a more predictable user experience.
 
+- **Caching and data synchronization**  
+  Introduction of a cache layer (Redis) to reduce database load, improve response times, and keep frequently accessed state in sync with the primary PostgreSQL store—supporting smoother interactions under load.
 
+- **Real-time updates (planned)**  
+  WebSocket-based messaging to reflect state changes instantly, reducing the need for manual refreshes and supporting collaborative, time-sensitive workflows.
 
-July 23rd 
-- need to fix views that will not run and go air issues
+---
 
+## Tech Stack
 
-July 24th 
-- need to figure out how to deal with returning JSON from  the createnewroom and in the future the Joinroom handler function.
-- I am thinking the best way to do deal with this is see how to access the context and its stuff
-- if not return the error/json as seen fit after the request has been validated
+- **Backend:** Go  
+  The core application logic is written in Go, emphasizing explicit behavior, predictable execution, and clear error handling.
 
+- **Web Framework:** Fiber  
+  Used to provide a lightweight, fast HTTP layer while keeping routing and request handling straightforward and easy to reason about.
 
-July 26th 
-- Able to create and join chatrooms need to be able to broadcast message about a user joining the server. 
-- Maybe add functions to be able to grab all clients are get all rooms or get a certain room
-- Then need to work on the front end probably.
+- **Database:** PostgreSQL  
+  A relational data store chosen for its reliability, strong consistency guarantees, and ability to model real-world constraints clearly.
 
+- **Data Access:**  
+  Code-first data modeling using the Ent framework to enforce schema clarity, validate constraints early, and reduce ambiguity between application state and persisted data.
 
-July 31st 
-- Front End Todos
---> Clean up Home Page to log a user in or have them create an account
---> Create User webpage that will alllow them to have a dashboard for projects
-    --> Under porjects it should have rooms listed built around assignments 
-    --> Show current user role in response to project
---> Chat room should be able to show status of the project and have panels for tracking project status
+- **Frontend:**  
+  Server-rendered HTML with minimal JavaScript today, with a planned transition to a React-based frontend using Next.js to improve interactivity, validation feedback, and overall user experience.
 
+- **Caching:**  
+  Redis (in progress) to reduce database load, improve response times, and support synchronized, frequently accessed state without compromising consistency.
 
-August 3rd
-HAve the login and create user page just need icons for different social media logins
-Can create users and validate that request, need to go through and add sessions to users that can be implemented whether a user is returning or just created an account. Then probably want to create the login dashboard that a user can see after successfully logging in. Some point need to deal with error handling for the users.
+- **Tooling:**  
+  Git and GitHub for version control, iteration, and transparent development.
 
+---
 
-Then deal with chatrooms, messages, spreadsheets and more....
+## Design Philosophy
+
+- Prefer explicit, readable code over clever abstractions  
+  Code should clearly communicate intent so behavior is easy to understand, debug, and extend—especially when revisited over time.
+
+- Handle errors early and clearly  
+  Errors are treated as part of the system’s normal behavior and surfaced intentionally to avoid compounding issues later.
+
+- Build from components to flow  
+  Systems are developed bottom-up—starting with well-defined components, composed into concepts, integrated into systems, and ultimately shaped to support uninterrupted user flow.
+
+- Design for evolution without rewrites  
+  Each layer is built to change independently, allowing the system to grow without forcing large-scale refactors or rushed architectural decisions.
+
+- Optimize for calm, sustainable development  
+  Architectural choices aim to reduce cognitive load and protect momentum, particularly when working under real-world time constraints.
+
+---
+
+## Getting Started
+
+```bash
+# clone repo
+git clone <repo-url>
+
+# run locally
+go run main.go
+
+---
+
