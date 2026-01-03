@@ -1,0 +1,16 @@
+
+
+{{define "title"}}Create User{{end}}
+
+	
+{{define "createuser"}}
+  {{template "base" .}}
+{{end}}
+
+
+{{define "content"}}
+  <h1>Create User</h1>  
+  <div id="create_user_form">
+    {{template "create_user_form" .}} 
+  </div>
+{{end}}

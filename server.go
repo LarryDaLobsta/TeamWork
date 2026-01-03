@@ -7,10 +7,10 @@ import (
 	"log"
 	"net/url"
 	"os"
-	"errors"
 	BLL "teamplayer/bll/auth"
 	DAL "teamplayer/dal"
 	models "teamplayer/models"
+	viewmodels "teamplayer/models/viewmodels"
 	"teamplayer/ent"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
@@ -44,7 +44,10 @@ func indexHandler(c *fiber.Ctx) error {
 // gets the new user form so a user get created.
 func newUserGetHandler(c *fiber.Ctx) error {
 
-	return c.Render("createuser", fiber.Map{})
+	// new view model
+	vm := viewmodels.SignUpViewModel{}
+
+	return c.Render("createuser", vm)
 }
 
 
@@ -52,55 +55,55 @@ func newUserPostHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) e
 
 	log.Println("Post method to create a new user")
 
+	// new view model
+	vm := viewmodels.SignUpViewModel{}
+
 	// Get the request for the form data
 	var NewUserObj models.UserSignUp
 
+	//parse the object to get user information
 	if err := c.BodyParser(&NewUserObj); err != nil {
 		// handle bad request data maybe a code and 
 		// information to tell the user to retry
 	}
 
+	// assign into View Model
+	vm.Form = NewUserObj
+
+
 	//either format object to go to bll or bll will handle it
 	if SignUpErr := BLL.UserSignUp(ctx, client , NewUserObj); SignUpErr != nil {
 
-		var valErrUserInfo *models.NewUserValidationError
+		// get the fields that have errors and assign error messages
+		vm = BLL.CreateAccError(SignUpErr, vm)
 
-		if errors.As(SignUpErr, &valErrUserInfo) {
-			log.Println("User put in bad data")
-			// we know error is for bad user infobad information return error and the webpage
-			return c.Render("createuser", fiber.Map{
-				"values": fiber.Map{
-				"first_name": NewUserObj.FirstName,
-				"last_name":  NewUserObj.LastName,
-				"email":      NewUserObj.Email,
-				"user_name":  NewUserObj.UserName,
-				},
-				"errors": fiber.Map{
-				valErrUserInfo.SignUpField : valErrUserInfo.ValidationMessage,
-				},
-				"hasErrors": true,
-			})
-		}
+		// clear password
+		vm.Form.Password = ""
 
+		// return with errors
+		return c.Render("create_user_form", vm)
 
-		// return error minimal information, db related
-		log.Printf("signup failed: %v", SignUpErr)
-
-		return c.Status(fiber.StatusInternalServerError).Render("createuser", fiber.Map{
-			"values": fiber.Map{
-				"first_name": NewUserObj.FirstName,
-				"last_name":  NewUserObj.LastName,
-				"email":      NewUserObj.Email,
-				"user_name":  NewUserObj.UserName,
-			},
-			"globalError": "Something went wrong while creating your account. Please try again.",
-		})
-
-		
 	}
+		// // return error minimal information, db related
+		// log.Printf("signup failed: %v", SignUpErr)
+
+		// return c.Status(fiber.StatusInternalServerError).Render("createuser", fiber.Map{
+		// 	"values": fiber.Map{
+		// 		"first_name": NewUserObj.FirstName,
+		// 		"last_name":  NewUserObj.LastName,
+		// 		"email":      NewUserObj.Email,
+		// 		"user_name":  NewUserObj.UserName,
+		// 	},
+		// 	"globalError": "Something went wrong while creating your account. Please try again.",
+		// })
 
 	// redirect 
-	return c.Redirect("/logindashboard")
+	if c.Get("HX-Request") == "true" {
+		c.Set("HX-Redirect", "pages/logindashboard")
+		return nil
+	}
+	
+	return c.Redirect("pages/logindashboard")
 
 
 }

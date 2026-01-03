@@ -9,6 +9,8 @@ import (
 	"unicode"
 	"golang.org/x/crypto/bcrypt"
 	models "teamplayer/models"
+	viewmodels "teamplayer/models/viewmodels"
+	"errors"
 	// "github.com/gofiber/contrib/websocket"
 	// dal "teamplayer/dal"
 )
@@ -180,4 +182,24 @@ func HashPassword(password string) (string,error) {
 		return "", err
 	}
 	return string(hashBytes), nil
+}
+
+func CreateAccError(SignUpErr error, SignUpVM viewmodels.SignUpViewModel) viewmodels.SignUpViewModel {
+	var ve *models.NewUserValidationError
+	if errors.As(SignUpErr, &ve) {
+		switch ve.SignUpField {
+		case "first_name":
+			SignUpVM.Errors.FirstName = ve.ValidationMessage
+		case "last_name":
+			SignUpVM.Errors.LastName = ve.ValidationMessage
+		case "email":
+			SignUpVM.Errors.Email = ve.ValidationMessage
+		case "username":
+			SignUpVM.Errors.UserName = ve.ValidationMessage
+		case "password":
+			SignUpVM.Errors.Password = ve.ValidationMessage
+		}
+	}
+
+	return SignUpVM
 }

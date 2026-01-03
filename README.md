@@ -154,3 +154,9 @@ ToDo:
 	•	Extract navigation bar into a shared layout partial
 	•	Handle database unique-constraint errors (email / username) and map them to user-facing validation messages
 	•	Improve validation flow to return form partials on error (no full-page re-render with HTMX)
+
+
+Jan 3rd, 2026
+    - Cleaned up route handling for htmx and handlers for the createuser
+    - it runs
+    - issue with redirect need to change logindashboard to go like fashion like how I did the createuser page. This will allow me to call the file in the render like I did with post and get for crate user

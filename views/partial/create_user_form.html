@@ -1,0 +1,106 @@
+<!-- the login form for new users  -->
+{{define "create_user_form"}}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-6 col-lg-4">
+            <div class="card">
+            <div class="card-body">
+                <form 
+                    hx-post="/signup"
+                    hx-target="#create_user_form" 
+                    hx-swap="innerHTML" 
+                    method="POST"
+                >
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input
+                        type="text"
+                            class="form-control{{if .Errors.FirstName}} is-invalid{{end}}"
+                            id="first_name"
+                            name="first_name"
+                            placeholder="Enter last name"
+                            value="{{.Form.FirstName}}"
+                        >
+                        {{if .Errors.FirstName}}
+                            <div class="invalid-feedback">
+                                {{.Errors.FirstName}}
+                            </div>
+                        {{end}}
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input
+                            type="text"
+                            class="form-control{{if .Errors.LastName}} is-invalid{{end}}"
+                            id="last_name"
+                            name="last_name"
+                            placeholder="Enter last name"
+                            value="{{.Form.LastName}}"
+                        >
+                        {{if .Errors.LastName}}
+                            <div class="invalid-feedback">
+                                {{.Errors.LastName}}
+                            </div>
+                        {{end}}
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input 
+                            type="email" 
+                            class="form-control{{if .Errors.Email}} is-invalid{{end}}"
+                            id="email" 
+                            name="email" 
+                            aria-describedby="emailHelp" 
+                            placeholder="Enter email"
+                            value="{{.Form.Email}}"
+                        >
+                        {{if .Errors.Email}}
+                            <div class="invalid-feedback">
+                                {{.Errors.Email}}
+                            </div>
+                        {{end}}
+                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">User name</label>
+                        <input
+                            type="text"
+                            class="form-control{{if .Errors.UserName}} is-invalid{{end}}"
+                            id="username"
+                            name="username"
+                            placeholder="Create a username"
+                            value="{{.Form.UserName}}"
+                        >
+                        {{if .Errors.UserName}}
+                            <div class="invalid-feedback">
+                                {{.Errors.UserName}}
+                            </div>
+                        {{end}}
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input 
+                            type="password" 
+                            class="form-control{{if .Errors.Password}} is-invalid{{end}}"
+                            id="password" 
+                            name="password" 
+                            placeholder="Create a password"
+                        >
+                        {{if .Errors.Password}}
+                            <div class="invalid-feedback">
+                                {{.Errors.Password}}
+                            </div>
+                        {{end}}
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" value="Submit">Create Account</button>
+                </form>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+{{end}}
