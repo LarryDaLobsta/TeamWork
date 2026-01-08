@@ -6,6 +6,7 @@ import (
 
 
 type SignUpViewModel struct {
+	Title string
 	Form 	models.UserSignUp
 	Errors 	models.SignUpErrors
 }

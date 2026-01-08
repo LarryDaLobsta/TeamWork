@@ -22,21 +22,9 @@ import (
 // This is a test for a PLUGIN FOR GIT
 // render the login page
 func indexHandler(c *fiber.Ctx) error {
-	// var res string
-	// var todos []string
-	// rows, err := db.Query("SELECT * FROM todos")
-	// defer rows.Close()
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// 	c.JSON("An error occured")
-	// }
-	// for rows.Next() {
-	// 	rows.Scan(&res)
-	//
-	// 	todos = append(todos, res)
-	// }
+	
 
-	return c.Render("createuser", fiber.Map{
+	return c.Render("index", fiber.Map{
 		//"Todos": todos,
 	})
 }
@@ -45,8 +33,11 @@ func indexHandler(c *fiber.Ctx) error {
 func newUserGetHandler(c *fiber.Ctx) error {
 
 	// new view model
-	vm := viewmodels.SignUpViewModel{}
-
+	vm := viewmodels.SignUpViewModel{
+		Form:   models.UserSignUp{},
+        Errors: models.SignUpErrors{},
+	}
+	log.Println("NEWWWW UUUUUSSSESARERERERER method to create a new user")
 	return c.Render("createuser", vm)
 }
 
@@ -99,11 +90,11 @@ func newUserPostHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) e
 
 	// redirect 
 	if c.Get("HX-Request") == "true" {
-		c.Set("HX-Redirect", "pages/logindashboard")
+		c.Set("HX-Redirect", "logindashboard")
 		return nil
 	}
 	
-	return c.Redirect("pages/logindashboard")
+	return c.Redirect("logindashboard")
 
 
 }
@@ -112,28 +103,25 @@ func newUserPostHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) e
 // need to validate, then authenticate
 // either go home screen to re-login or go to the dashboard
 
-// Structs for the application
-type todo struct {
-	Item string
-}
 
-func postHandler(c *fiber.Ctx, db *sql.DB) error {
-	newTodo := todo{}
-	if err := c.BodyParser(&newTodo); err != nil {
-		log.Printf("An error occured: %v", err)
-		return c.SendString(err.Error())
-	}
-	fmt.Printf("%v", newTodo)
-	fmt.Printf("New item is added to the todos")
-	if newTodo.Item != "" {
-		_, err := db.Exec("INSERT into todos VALUES ($1)", newTodo.Item)
-		if err != nil {
-			log.Fatalf("An error occured while executing query: %v", err)
-		}
-	}
 
-	return c.Redirect("/")
-}
+// func postHandler(c *fiber.Ctx, db *sql.DB) error {
+// 	newTodo := todo{}
+// 	if err := c.BodyParser(&newTodo); err != nil {
+// 		log.Printf("An error occured: %v", err)
+// 		return c.SendString(err.Error())
+// 	}
+// 	fmt.Printf("%v", newTodo)
+// 	fmt.Printf("New item is added to the todos")
+// 	if newTodo.Item != "" {
+// 		_, err := db.Exec("INSERT into todos VALUES ($1)", newTodo.Item)
+// 		if err != nil {
+// 			log.Fatalf("An error occured while executing query: %v", err)
+// 		}
+// 	}
+
+// 	return c.Redirect("/")
+// }
 
 func loginUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
 	// this is to deal with returning users
@@ -245,6 +233,7 @@ func main() {
 
 
 	engine := html.New("./views", ".html")
+	
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
@@ -337,17 +326,10 @@ func main() {
 	app.Post("/signup", func(cfib *fiber.Ctx) error {
 		// adding user to the system
 		return newUserPostHandler(cfib, dbConn.Ent, ctx)
-		// return postHandler(c, db)
+		
 	})
 
-	// this is for a single parameter at the moment
-	app.Put("/update/:olditem/:newitem", func(c *fiber.Ctx) error {
-		return putHandler(c, dbConn.SQL)
-	})
-
-	app.Delete("/delete", func(c *fiber.Ctx) error {
-		return deleteHandler(c, dbConn.SQL)
-	})
+	
 
 	port := os.Getenv("PORT")
 	if port == "" {
