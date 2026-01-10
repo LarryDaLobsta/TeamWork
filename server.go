@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"time"
+	middleware "teamplayer/middleware"
 	BLL "teamplayer/bll/auth"
 	DAL "teamplayer/dal"
 	models "teamplayer/models"
@@ -15,6 +17,7 @@ import (
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/template/html/v2"
 	_ "github.com/lib/pq" // add this
 )
@@ -238,33 +241,6 @@ func main() {
 		Views: engine,
 	})
 
-	// static route and directory
-	app.Static("/static/", "./static")
-
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*", // Allow all origins, or specify your frontend domain
-		AllowMethods: "GET,POST,PUT,DELETE",
-	}))
-
-	app.Use("/ws", func(c *fiber.Ctx) error {
-		if websocket.IsWebSocketUpgrade(c) {
-			c.Locals("allowed", true)
-			log.Println("Upgraded the websocket")
-			return c.Next()
-			// can also handle taking apart token can't do that in websocket conn vs ctx
-		} 
-
-		return fiber.ErrUpgradeRequired
-	})
-
-	// database health check
-	app.Get("/health/db", func(c *fiber.Ctx) error {
-		if err := dbConn.DbHealthCheck(c.Context()); err != nil {
-			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
-		}
-		return c.SendString("ok")
-	})
-
 	chatHub := models.NewChatRoomServer()
 
 	// Create the default "lobby" room can convert to a function later
@@ -278,21 +254,44 @@ func main() {
 	chatHubHandler := models.NewChatRoomHandler(chatHub)
 
 	go chatHub.StartServer()
-	app.Post("/ws/createRoom", func(c *fiber.Ctx) error {
-		return chatHubHandler.CreateNewRoom(c)
+
+	// END of startup dependencies
+
+	// Middleware section
+	// static route and directory
+	app.Static("/static/", "./static")
+
+	// browser level, do I let this talk to the server?
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*", // Allow all origins, or specify your frontend domain. When I decide to get a front end I need to specify
+		AllowMethods: "GET,POST,PUT,DELETE",
+	}))
+
+	// session level 
+	var store = session.New(session.Config{
+		CookieSecure:    false,
+		CookieHTTPOnly: true,
+		CookieSameSite: "Lax",
+		Expiration:    30 * time.Minute,
 	})
+	// app.Use(session.New(session.Config{
+	// 	// Storage:           storage,		  // This will be changes when I get redis installed and working
+	// 	CookieSecure:      false,              // HTTPS only, need to change when in testing or production
+	// 	CookieHTTPOnly:    true,              // Prevent XSS
+	// 	CookieSameSite:    "Lax",             // CSRF protection
+	// 	IdleTimeout:       30 * time.Minute,  // Session timeout
+	// 	AbsoluteTimeout:   24 * time.Hour,    // Maximum session life
+	// 	// Extractor:         extractors.FromCookie("__Host-session_id"), // will also change in production as well
+	// }))
 
-	app.Get("/ws/joinRoom/:roomId/:userId/:username",
-    websocket.New(func(c *websocket.Conn) {
-        log.Println("WS handler hit:",
-            c.Params("roomId"),
-            c.Params("userId"),
-            c.Params("username"),
-        )
+	// user level middleware
 
-        chatHubHandler.JoinRoom(c)
-    }),
-)
+	app.Use(middleware.LoadUserSession(dbConn.Ent, store))
+
+
+	// END of middleware section
+
+	/// START public routes: login, signup, home page
 
 	// this will return the default login page
 	app.Get("/", func(c *fiber.Ctx) error {
@@ -300,37 +299,76 @@ func main() {
 		log.Println("Home landing page.")
 		return indexHandler(c)
 	})
-
-	app.Get("/chatroom", func(c *fiber.Ctx) error {
-		log.Println("Here we goooo")
-		return c.Render("chatroom", fiber.Map{})
-	})
-
+	
 	app.Get("/signup", func(c *fiber.Ctx) error {
 		log.Println("Creating a new user here")
 		return newUserGetHandler(c)
 	})
 
+	app.Post("/signup", func(c *fiber.Ctx) error {
+		// adding user to the system
+		return newUserPostHandler(c, dbConn.Ent, ctx)
+		
+	})
+	// END public routes
 
-	app.Get("/logindashboard", func(c *fiber.Ctx) error {
+	// START protected routes
+	// This will deal with the post methods adding new todos, new users, new chatrooms, etc
+	auth := app.Group("/", middleware.RequireAuth)
+	
+
+	// database health check
+	auth.Get("/health/db", func(c *fiber.Ctx) error {
+		if err := dbConn.DbHealthCheck(c.Context()); err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+		}
+		return c.SendString("ok")
+	})
+
+	// GET requested chatroom
+	auth.Get("/chatroom", func(c *fiber.Ctx) error {
+		log.Println("Here we goooo")
+		return c.Render("chatroom", fiber.Map{})
+	})
+
+
+	// GET user logindashobard 
+	auth.Get("/logindashboard", func(c *fiber.Ctx) error {
 		log.Println("Successfully created user. On user home page")
 		return c.Render("logindashboard", fiber.Map{})
 	})
 
-	//New user sign up section 
-	//app.Get signup
-	//re-route so user logs in with new credentials
-	// then give user lobby/logindashboard room
+	// GET Websocket request
+	auth.Use("/ws", func(c *fiber.Ctx) error {
+		if websocket.IsWebSocketUpgrade(c) {
+			log.Println("Upgraded the websocket")
+			return c.Next()
+			// can also handle taking apart token can't do that in websocket conn vs ctx
+		} 
 
-	// This will deal with the post methods adding new todos, new users, new chatrooms, etc
-	app.Post("/signup", func(cfib *fiber.Ctx) error {
-		// adding user to the system
-		return newUserPostHandler(cfib, dbConn.Ent, ctx)
-		
+		return fiber.ErrUpgradeRequired
 	})
 
-	
+	// GET chatroom request
+	auth.Get("/ws/joinRoom/:roomId", func(c *fiber.Ctx) error {
+		u := c.Locals("currentUser").(*models.PublicUserProfile)
+		c.Locals("user_uuid", u.UUID_Id.String())
+		c.Locals("username", u.UserName)
+		u, ok := c.Locals("currentUser").(*models.PublicUserProfile)
+		if !ok || u == nil {
+			return fiber.ErrUnauthorized
+		}
 
+		return websocket.New(chatHubHandler.JoinRoom)(c)
+	})
+	
+	// POST Create chatroom request
+	auth.Post("/ws/createRoom", func(c *fiber.Ctx) error {
+		return chatHubHandler.CreateNewRoom(c)
+	})
+
+	// END protected routes
+	
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"

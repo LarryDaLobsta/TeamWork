@@ -16,3 +16,12 @@ type UserRecord struct {
 	Email		 string    
 	PasswordHash string    
 }
+
+type PublicUserProfile struct {
+	UUID_Id      uuid.UUID	
+	FirstName    string		  
+	LastName     string    	
+	UserName     string		
+	Email		 string    	
+}
+

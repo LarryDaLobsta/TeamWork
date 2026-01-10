@@ -160,3 +160,12 @@ Jan 3rd, 2026
     - Cleaned up route handling for htmx and handlers for the createuser
     - it runs
     - issue with redirect need to change logindashboard to go like fashion like how I did the createuser page. This will allow me to call the file in the render like I did with post and get for crate user
+
+
+Jan 7th, 2026
+    - Routing is a lot cleaner with the breakup of explicit blocks in go templates. Rather than global templates that caused a lot of bleeding over.
+    - Next that needs to be done is go full crud, work on middle ware, sessions and cookies then shared layouts and make front end beautiful.
+
+January 10th, 2026
+    - cleaned up middleware authentication, flow, and re-direction for authenticated and unauthenticated users
+    - Lets create the rest of CRUD for user, then create edit, delete form, edit and delete routes and handlers

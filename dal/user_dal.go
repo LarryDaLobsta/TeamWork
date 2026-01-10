@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"teamplayer/ent"
+	"teamplayer/ent/user"
 	M "teamplayer/models"
 	_ "github.com/lib/pq"
+	"github.com/google/uuid"
 )
 
 // Creating a user
@@ -100,6 +102,15 @@ func CreateUser(newUser M.UserRecord, client *ent.Client, ctx context.Context) e
 // 	return nil
 // }
 
+
+func GetUserByUUID(ctx context.Context, client *ent.Client, currUserUUID uuid.UUID) (*ent.User, error) {
+	
+	return client.User.
+	Query().
+	Where(user.UserUUIDEQ(currUserUUID)).
+	Only(ctx)
+
+}
 // Deleting a user
 
 // Grab a group of users

@@ -8,9 +8,10 @@ import (
 	"net/mail"
 	"unicode"
 	"golang.org/x/crypto/bcrypt"
+	"errors"
 	models "teamplayer/models"
 	viewmodels "teamplayer/models/viewmodels"
-	"errors"
+	"github.com/google/uuid"
 	// "github.com/gofiber/contrib/websocket"
 	// dal "teamplayer/dal"
 )
@@ -202,4 +203,13 @@ func CreateAccError(SignUpErr error, SignUpVM viewmodels.SignUpViewModel) viewmo
 	}
 
 	return SignUpVM
+}
+
+
+
+
+
+func IsValidUUID(userUUID uuid.UUID) bool {
+	// if true no UUID is present
+	return userUUID == uuid.Nil
 }
