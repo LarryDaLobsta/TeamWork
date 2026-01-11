@@ -169,3 +169,8 @@ Jan 7th, 2026
 January 10th, 2026
     - cleaned up middleware authentication, flow, and re-direction for authenticated and unauthenticated users
     - Lets create the rest of CRUD for user, then create edit, delete form, edit and delete routes and handlers
+
+January 10th, 2026 later on
+    - added partial and full view for the edit and delete user. 
+    - need to build out backend routes, handlers, BLL, and DAL. Plus any helpers
+    - add buttons to user account page
