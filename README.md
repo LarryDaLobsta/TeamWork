@@ -174,3 +174,11 @@ January 10th, 2026 later on
     - added partial and full view for the edit and delete user. 
     - need to build out backend routes, handlers, BLL, and DAL. Plus any helpers
     - add buttons to user account page
+
+
+January 31st, 2026
+    - begin building out end to end for the update user
+    - look at auth_edit_user.go need to build bll 
+    - then after build out route and handler
+    - then hook up to front end
+    - test
