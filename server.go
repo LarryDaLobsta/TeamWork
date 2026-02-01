@@ -7,13 +7,14 @@ import (
 	"log"
 	"net/url"
 	"os"
-	"time"
-	middleware "teamplayer/middleware"
 	BLL "teamplayer/bll/auth"
 	DAL "teamplayer/dal"
+	"teamplayer/ent"
+	middleware "teamplayer/middleware"
 	models "teamplayer/models"
 	viewmodels "teamplayer/models/viewmodels"
-	"teamplayer/ent"
+	"time"
+
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -25,7 +26,6 @@ import (
 // This is a test for a PLUGIN FOR GIT
 // render the login page
 func indexHandler(c *fiber.Ctx) error {
-	
 
 	return c.Render("index", fiber.Map{
 		//"Todos": todos,
@@ -38,12 +38,11 @@ func newUserGetHandler(c *fiber.Ctx) error {
 	// new view model
 	vm := viewmodels.SignUpViewModel{
 		Form:   models.UserSignUp{},
-        Errors: models.SignUpErrors{},
+		Errors: models.SignUpErrors{},
 	}
 	log.Println("NEWWWW UUUUUSSSESARERERERER method to create a new user")
 	return c.Render("createuser", vm)
 }
-
 
 func newUserPostHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) error {
 
@@ -57,16 +56,15 @@ func newUserPostHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) e
 
 	//parse the object to get user information
 	if err := c.BodyParser(&NewUserObj); err != nil {
-		// handle bad request data maybe a code and 
+		// handle bad request data maybe a code and
 		// information to tell the user to retry
 	}
 
 	// assign into View Model
 	vm.Form = NewUserObj
 
-
 	//either format object to go to bll or bll will handle it
-	if SignUpErr := BLL.UserSignUp(ctx, client , NewUserObj); SignUpErr != nil {
+	if SignUpErr := BLL.UserSignUp(ctx, client, NewUserObj); SignUpErr != nil {
 
 		// get the fields that have errors and assign error messages
 		vm = BLL.CreateAccError(SignUpErr, vm)
@@ -78,35 +76,44 @@ func newUserPostHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) e
 		return c.Render("create_user_form", vm)
 
 	}
-		// // return error minimal information, db related
-		// log.Printf("signup failed: %v", SignUpErr)
+	// // return error minimal information, db related
+	// log.Printf("signup failed: %v", SignUpErr)
 
-		// return c.Status(fiber.StatusInternalServerError).Render("createuser", fiber.Map{
-		// 	"values": fiber.Map{
-		// 		"first_name": NewUserObj.FirstName,
-		// 		"last_name":  NewUserObj.LastName,
-		// 		"email":      NewUserObj.Email,
-		// 		"user_name":  NewUserObj.UserName,
-		// 	},
-		// 	"globalError": "Something went wrong while creating your account. Please try again.",
-		// })
+	// return c.Status(fiber.StatusInternalServerError).Render("createuser", fiber.Map{
+	// 	"values": fiber.Map{
+	// 		"first_name": NewUserObj.FirstName,
+	// 		"last_name":  NewUserObj.LastName,
+	// 		"email":      NewUserObj.Email,
+	// 		"user_name":  NewUserObj.UserName,
+	// 	},
+	// 	"globalError": "Something went wrong while creating your account. Please try again.",
+	// })
 
-	// redirect 
+	// redirect
 	if c.Get("HX-Request") == "true" {
 		c.Set("HX-Redirect", "logindashboard")
 		return nil
 	}
-	
+
 	return c.Redirect("logindashboard")
 
+}
+
+func editUserGetHandler() {
+	// handler function for editing a user request
+
+	// parse the form information from the user
+
+	// go to BLL to validate
+
+	// return error based on if we were able to successfully update
 
 }
+
 // add the login handler here
 
 // need to validate, then authenticate
 // either go home screen to re-login or go to the dashboard
-
-
 
 // func postHandler(c *fiber.Ctx, db *sql.DB) error {
 // 	newTodo := todo{}
@@ -139,7 +146,7 @@ func loginUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) err
 // 	// if checkError = DAL.CheckUser(ctx, c, client); checkError != nil {
 // 	// 	return checkError
 // 	// }
-	
+
 // 	var newUser models.UserSignUp
 
 // 	if err := c.BodyParser(&newUser); err != nil {
@@ -148,22 +155,22 @@ func loginUserHandler(c *fiber.Ctx, client *ent.Client, ctx context.Context) err
 // 			"error": "invalid new user sign up body",
 // 		})
 // 	}
-	
+
 // 	err := BLL.UserSignUp(ctx, client, newUser)
 // 	if err != nil {
 // 		switch e := err.(type) {
-	
+
 // 		case models.NewUserValidationError:
 // 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 // 				"field":   e.SignUpField,
 // 				"message": e.ValidationMessage,
 // 			})
-	
+
 // 		case *ent.ConstraintError:
 // 			return c.Status(fiber.StatusConflict).JSON(fiber.Map{
 // 				"error": "username or email already exists",
 // 			})
-	
+
 // 		default:
 // 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 // 				"error": "internal server error",
@@ -234,9 +241,8 @@ func main() {
 	defer dbConn.SQL.Close()
 	defer dbConn.Ent.Close()
 
-
 	engine := html.New("./views", ".html")
-	
+
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
@@ -250,7 +256,7 @@ func main() {
 		Project: "default",
 		Clients: make(map[string]*models.Client),
 	}
-	
+
 	chatHubHandler := models.NewChatRoomHandler(chatHub)
 
 	go chatHub.StartServer()
@@ -267,12 +273,12 @@ func main() {
 		AllowMethods: "GET,POST,PUT,DELETE",
 	}))
 
-	// session level 
+	// session level
 	var store = session.New(session.Config{
-		CookieSecure:    false,
+		CookieSecure:   false,
 		CookieHTTPOnly: true,
 		CookieSameSite: "Lax",
-		Expiration:    30 * time.Minute,
+		Expiration:     30 * time.Minute,
 	})
 	// app.Use(session.New(session.Config{
 	// 	// Storage:           storage,		  // This will be changes when I get redis installed and working
@@ -288,7 +294,6 @@ func main() {
 
 	app.Use(middleware.LoadUserSession(dbConn.Ent, store))
 
-
 	// END of middleware section
 
 	/// START public routes: login, signup, home page
@@ -299,7 +304,7 @@ func main() {
 		log.Println("Home landing page.")
 		return indexHandler(c)
 	})
-	
+
 	app.Get("/signup", func(c *fiber.Ctx) error {
 		log.Println("Creating a new user here")
 		return newUserGetHandler(c)
@@ -308,14 +313,13 @@ func main() {
 	app.Post("/signup", func(c *fiber.Ctx) error {
 		// adding user to the system
 		return newUserPostHandler(c, dbConn.Ent, ctx)
-		
+
 	})
 	// END public routes
 
 	// START protected routes
 	// This will deal with the post methods adding new todos, new users, new chatrooms, etc
 	auth := app.Group("/", middleware.RequireAuth)
-	
 
 	// database health check
 	auth.Get("/health/db", func(c *fiber.Ctx) error {
@@ -331,8 +335,7 @@ func main() {
 		return c.Render("chatroom", fiber.Map{})
 	})
 
-
-	// GET user logindashobard 
+	// GET user logindashobard
 	auth.Get("/logindashboard", func(c *fiber.Ctx) error {
 		log.Println("Successfully created user. On user home page")
 		return c.Render("logindashboard", fiber.Map{})
@@ -344,7 +347,7 @@ func main() {
 			log.Println("Upgraded the websocket")
 			return c.Next()
 			// can also handle taking apart token can't do that in websocket conn vs ctx
-		} 
+		}
 
 		return fiber.ErrUpgradeRequired
 	})
@@ -361,14 +364,14 @@ func main() {
 
 		return websocket.New(chatHubHandler.JoinRoom)(c)
 	})
-	
+
 	// POST Create chatroom request
 	auth.Post("/ws/createRoom", func(c *fiber.Ctx) error {
 		return chatHubHandler.CreateNewRoom(c)
 	})
 
 	// END protected routes
-	
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"

@@ -6,8 +6,9 @@ import (
 	"teamplayer/ent"
 	"teamplayer/ent/user"
 	M "teamplayer/models"
-	_ "github.com/lib/pq"
+
 	"github.com/google/uuid"
+	_ "github.com/lib/pq"
 )
 
 // Creating a user
@@ -22,7 +23,7 @@ func CreateUser(newUser M.UserRecord, client *ent.Client, ctx context.Context) e
 	// if err := c.BodyParser(newUser); err != nil {
 	// 	return err
 	// }
-	// also need to update all parameters getting issue about 
+	// also need to update all parameters getting issue about
 
 	// end of that piece
 
@@ -37,6 +38,29 @@ func CreateUser(newUser M.UserRecord, client *ent.Client, ctx context.Context) e
 		return fmt.Errorf("Error: %v %v", err, createdNewUser)
 	}
 	return nil
+}
+
+func EmailExistsExcludingUser(email string, userUUID uuid.UUID, client *ent.Client, ctx context.Context) (bool, error) {
+
+	exists, err := client.User.
+		Query().
+		Where(
+			user.EmailEQ(email),
+			user.UserUUIDNEQ(userUUID),
+		).
+		Exist(ctx)
+
+	// if there is an error we know a database level error
+	if err != nil {
+		return exists, fmt.Errorf("Error: %v", err)
+	}
+
+	// return result to be intepreted at bll
+	return exists, nil
+}
+
+func IsUserNameUnique(UserName string) bool {
+	return true
 }
 
 // returns true if user found or false if user not found
@@ -102,15 +126,15 @@ func CreateUser(newUser M.UserRecord, client *ent.Client, ctx context.Context) e
 // 	return nil
 // }
 
-
 func GetUserByUUID(ctx context.Context, client *ent.Client, currUserUUID uuid.UUID) (*ent.User, error) {
-	
+
 	return client.User.
-	Query().
-	Where(user.UserUUIDEQ(currUserUUID)).
-	Only(ctx)
+		Query().
+		Where(user.UserUUIDEQ(currUserUUID)).
+		Only(ctx)
 
 }
+
 // Deleting a user
 
 // Grab a group of users
