@@ -182,3 +182,11 @@ January 31st, 2026
     - then after build out route and handler
     - then hook up to front end
     - test
+
+
+
+February 2nd, 2026
+    - Started creating helpers in helper folder for the edit form use those for edit user bll 
+    - look in chatgpt chat for flow of how to use them and where. 
+    - Hint cant use nil for VM we are checking each field and returning empty strings in the error field 
+    - The front end will only show errors for non emtyp error strings

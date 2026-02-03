@@ -9,10 +9,11 @@ type SignUpErrors struct {
 }
 
 type EditUserErrors struct {
-	FirstName string
-	LastName  string
-	Email     string
-	UserName  string
+	FirstName  string
+	LastName   string
+	Email      string
+	UserName   string
+	EmptyEntry string
 }
 
 type ServerErrors struct {
